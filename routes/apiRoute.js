@@ -8,5 +8,15 @@ router.get('/books', async (req, res) => {
     res.json(books);
 });
 
+router.post('/books', async (req, res) => {
+    console.log(req.body);
+
+    const newBook = await bookRepository.createBook({...req.body});
+    await newBook.save();
+    await bookRepository.disconnectFromDb();
+
+    res.json(newBook);
+});
+
 
 module.exports = router;
