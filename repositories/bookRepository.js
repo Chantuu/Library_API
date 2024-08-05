@@ -6,45 +6,37 @@ class BookRepository {
         return mongoose.connect(process.env.DATABASE_URI);
     }
 
-    static #disconnectFromDb() {
+    static disconnectFromDb() {
         return mongoose.connection.close();
     }
 
     static async getBookById(bookId) {
         await this.#connectToDb();
 
-        const book = await Book.findById(bookId);
-
-        await this.#disconnectFromDb();
-
-        return book;
+        return Book.findById(bookId);
     }
 
     static async getOneBookByFilter(filter) {
         await this.#connectToDb();
 
-        const book = await Book.findOne({...filter});
-
-        await this.#disconnectFromDb();
-
-        return book;
+        return Book.findOne({...filter});
     }
 
     static async getManyBooksByFilter(filter) {
         await this.#connectToDb();
 
-        const books = await Book.find({...filter});
+        return Book.find({...filter});
+    }
 
-        await this.#disconnectFromDb();
-
-        return books;
+    static async getAllBooks() {
+        return this.getManyBooksByFilter({});
     }
 
     static async createBook(bookData) {
         await this.#connectToDb();
 
         const newBook = new Book({
-            title: bookData.title,
+            name: bookData.name,
             author: bookData.author,
             genre: bookData.genre,
             publishYear: bookData.publishYear,
@@ -52,29 +44,19 @@ class BookRepository {
         });
         await newBook.save();
 
-        await this.#disconnectFromDb();
-
         return newBook;
     }
 
     static async getBookByIdAndUpdate(bookId, updateData) {
         await this.#connectToDb();
 
-        const book = await Book.updateOne(bookId, {...updateData}, {new: true});
-
-        await this.#disconnectFromDb();
-
-        return book;
+        return Book.updateOne(bookId, {...updateData}, {new: true});
     }
 
     static async getBookByIdAndDelete(bookId) {
         await this.#connectToDb();
 
-        const book = await Book.findByIdAndDelete(bookId);
-
-        await this.#disconnectFromDb();
-
-        return book;
+        return Book.findByIdAndDelete(bookId);
     }
 }
 
