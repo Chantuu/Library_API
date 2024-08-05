@@ -18,5 +18,14 @@ router.post('/books', async (req, res) => {
     res.json(newBook);
 });
 
+router.get('/books/:bookId', async (req, res) => {
+    console.log(req.params);
+
+    const { bookId } = req.params;
+    const book = await bookRepository.getBookById(bookId);
+
+    res.json(book);
+});
+
 
 module.exports = router;
