@@ -1,4 +1,9 @@
 const bookRepository = require("../repositories/bookRepository");
+const {validationResult, matchedData} = require("express-validator");
+const validationError = require("../utilities/validationError");
+
+
+const validationErrorMessage = 'Given JSON is incorrectly formatted or missing some information';
 
 
 async function getBooksRoute(req, res) {
@@ -9,15 +14,23 @@ async function getBooksRoute(req, res) {
 }
 
 async function createBookRoute(req, res) {
-    const newBook = await bookRepository.createBook({...req.body});
-    await newBook.save();
-    await bookRepository.disconnectFromDb();
+    const validationRes = validationResult(req);
+    if (validationRes.isEmpty()) {
+        const validatedData = matchedData(req);
 
-    res.json(newBook);
+        const newBook = await bookRepository.createBook({...validatedData});
+        await newBook.save();
+        await bookRepository.disconnectFromDb();
+
+        res.json(newBook);
+    } else {
+        throw new validationError(validationErrorMessage,
+            400, validationRes.array({onlyFirstError: true}));
+    }
 }
 
 async function displayBookByIdRoute(req, res) {
-    const { bookId } = req.params;
+    const {bookId} = req.params;
     const book = await bookRepository.getBookById(bookId);
     await bookRepository.disconnectFromDb();
 
@@ -25,7 +38,7 @@ async function displayBookByIdRoute(req, res) {
 }
 
 async function patchBookRoute(req, res) {
-    const { bookId } = req.params;
+    const {bookId} = req.params;
     const updatedBook = await bookRepository.getBookByIdAndUpdate(bookId, {...req.body});
     await bookRepository.disconnectFromDb();
 
