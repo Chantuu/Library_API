@@ -25,4 +25,9 @@ router.patch('/books/:bookId', catchAsyncError(patchBookRoute));
 
 router.delete('/books/:bookId', catchAsyncError(deleteBookRoute));
 
+// TODO basic error handler for testing error output
+router.use((err, req, res, next) => {
+    res.status(err.statusCode).json(err);
+});
+
 module.exports = router;
