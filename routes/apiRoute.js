@@ -1,49 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const bookRepository = require('../repositories/bookRepository');
+const {
+    getBooksRoute,
+    createBookRoute,
+    displayBookByIdRoute,
+    patchBookRoute,
+    deleteBookRoute
+} = require('../controllers/apiRouteController');
 
 
-router.get('/books', async (req, res) => {
-    const books = await bookRepository.getAllBooks();
-    res.json(books);
-});
+router.get('/books', getBooksRoute);
 
-router.post('/books', async (req, res) => {
-    console.log(req.body);
+router.post('/books', createBookRoute);
 
-    const newBook = await bookRepository.createBook({...req.body});
-    await newBook.save();
-    await bookRepository.disconnectFromDb();
+router.get('/books/:bookId', displayBookByIdRoute);
 
-    res.json(newBook);
-});
+router.patch('/books/:bookId', patchBookRoute);
 
-router.get('/books/:bookId', async (req, res) => {
-    console.log(req.params);
-
-    const { bookId } = req.params;
-    const book = await bookRepository.getBookById(bookId);
-
-    res.json(book);
-});
-
-router.patch('/books/:bookId', async (req, res) => {
-    console.log(req.params);
-    console.log(req.body);
-
-    const { bookId } = req.params;
-    const updatedBook = await bookRepository.getBookByIdAndUpdate(bookId, {...req.body});
-
-    res.json(updatedBook);
-});
-
-router.delete('/books/:bookId', async (req, res) => {
-    console.log(req.params);
-
-    const { bookId } = req.params;
-    const deletedBook = await bookRepository.getBookByIdAndDelete(bookId);
-
-    res.json(deletedBook);
-});
+router.delete('/books/:bookId', deleteBookRoute);
 
 module.exports = router;
