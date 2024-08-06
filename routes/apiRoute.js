@@ -27,5 +27,16 @@ router.get('/books/:bookId', async (req, res) => {
     res.json(book);
 });
 
+router.patch('/books/:bookId', async (req, res) => {
+    console.log(req.params);
+    console.log(req.body);
+
+    const { bookId } = req.params;
+    const updatedBook = await bookRepository.getBookByIdAndUpdate(bookId, {...req.body});
+
+    res.json(updatedBook);
+});
+
+//TODO write /api/books/<id> [PUT] and /api/books/<id> [DELETE]
 
 module.exports = router;
