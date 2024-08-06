@@ -7,16 +7,17 @@ const {
     patchBookRoute,
     deleteBookRoute
 } = require('../controllers/apiRouteController');
+const catchAsyncError = require('../errorHandlers/catchAsyncError');
 
 
-router.get('/books', getBooksRoute);
+router.get('/books', catchAsyncError(getBooksRoute));
 
-router.post('/books', createBookRoute);
+router.post('/books', catchAsyncError(createBookRoute));
 
-router.get('/books/:bookId', displayBookByIdRoute);
+router.get('/books/:bookId', catchAsyncError(displayBookByIdRoute));
 
-router.patch('/books/:bookId', patchBookRoute);
+router.patch('/books/:bookId', catchAsyncError(patchBookRoute));
 
-router.delete('/books/:bookId', deleteBookRoute);
+router.delete('/books/:bookId', catchAsyncError(deleteBookRoute));
 
 module.exports = router;
