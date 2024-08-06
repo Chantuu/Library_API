@@ -37,6 +37,13 @@ router.patch('/books/:bookId', async (req, res) => {
     res.json(updatedBook);
 });
 
-//TODO write /api/books/<id> [PUT] and /api/books/<id> [DELETE]
+router.delete('/books/:bookId', async (req, res) => {
+    console.log(req.params);
+
+    const { bookId } = req.params;
+    const deletedBook = await bookRepository.getBookByIdAndDelete(bookId);
+
+    res.json(deletedBook);
+});
 
 module.exports = router;
