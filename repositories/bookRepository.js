@@ -50,7 +50,7 @@ class BookRepository {
     static async getBookByIdAndUpdate(bookId, updateData) {
         await this.#connectToDb();
 
-        return Book.updateOne(bookId, {...updateData}, {new: true});
+        return Book.findByIdAndUpdate(bookId, {...updateData}, {new: true});
     }
 
     static async getBookByIdAndDelete(bookId) {
