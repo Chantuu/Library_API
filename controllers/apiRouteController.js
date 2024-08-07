@@ -130,8 +130,8 @@ async function deleteBookRoute(req, res) {
  * in JSON format to the end client.
  *
  * @param {ValidationError} err
- * @param {import('express').Request} req
- * @param {import('express').Response} res
+ * @param {import('express').request} req
+ * @param {import('express').response} res
  * @param {callback} next
  */
 function handleRouteErrors(err, req, res, next) {
