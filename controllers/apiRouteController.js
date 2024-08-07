@@ -1,6 +1,7 @@
 const bookRepository = require("../repositories/bookRepository");
 const {validationResult, matchedData} = require("express-validator");
 const validationError = require("../utilities/validationError");
+const {createBookJsonResponse} = require('../utilities/jsonResponeCreator');
 
 
 const validationJsonErrorMessage = 'Given JSON is incorrectly formatted or missing some information.';
@@ -11,7 +12,8 @@ async function getBooksRoute(req, res) {
     const books = await bookRepository.getAllBooks();
     await bookRepository.disconnectFromDb();
 
-    res.json(books);
+    const responseJSON = createBookJsonResponse(books);
+    res.json(responseJSON);
 }
 
 async function createBookRoute(req, res) {
@@ -23,7 +25,8 @@ async function createBookRoute(req, res) {
         await newBook.save();
         await bookRepository.disconnectFromDb();
 
-        res.json(newBook);
+        const responseJSON = createBookJsonResponse(newBook)
+        res.json(responseJSON);
     } else {
         throw new validationError(validationJsonErrorMessage,
             400, validationRes.array({onlyFirstError: true}));
@@ -37,7 +40,8 @@ async function displayBookByIdRoute(req, res) {
         const book = await bookRepository.getBookById(bookId);
         await bookRepository.disconnectFromDb();
 
-        res.json(book);
+        const responseJSON = createBookJsonResponse(book);
+        res.json(responseJSON);
     }
     else {
         throw new validationError(validationIdErrorMessage,
@@ -53,7 +57,8 @@ async function patchBookRoute(req, res) {
         const updatedBook = await bookRepository.getBookByIdAndUpdate(bookId, {...req.body});
         await bookRepository.disconnectFromDb();
 
-        res.json(updatedBook);
+        const responseJSON = createBookJsonResponse(updatedBook);
+        res.json(responseJSON);
     }
     else {
         throw new validationError(validationJsonErrorMessage,
@@ -69,7 +74,8 @@ async function deleteBookRoute(req, res) {
         const deletedBook = await bookRepository.getBookByIdAndDelete(bookId);
         await bookRepository.disconnectFromDb();
 
-        res.json(deletedBook);
+        const responseJSON = createBookJsonResponse(deletedBook);
+        res.json(responseJSON);
     }
     else {
         throw new validationError(validationIdErrorMessage,
