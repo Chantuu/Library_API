@@ -5,6 +5,7 @@ const methodOverride = require('method-override');
 const app = express();
 const apiRoute = require('./routes/apiRoute');
 const {createErrorResponse} = require('./utilities/jsonResponseCreator');
+const {handleIncorrectRoutes} = require('./controllers/appController');
 
 
 app.set('views', path.join(__dirname, 'views'));
@@ -18,12 +19,7 @@ app.use(express.static(path.join(__dirname, 'static'))); //For serving static fi
 
 app.use('/api', apiRoute);
 
-app.all('*', (req, res) => {
-    const statusCode = 404
-    res.status(statusCode).json(
-        createErrorResponse('Incorrect address. Please ensure, that you are using correct method on correct path',
-        'path_Not_Found', statusCode));
-});
+app.all('*', handleIncorrectRoutes);
 
 app.use((err, req, res, next) => {
     res.status(err.status).json(createErrorResponse(err.message, err.type, err.status));
