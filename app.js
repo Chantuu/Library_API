@@ -5,7 +5,7 @@ const methodOverride = require('method-override');
 const app = express();
 const apiRoute = require('./routes/apiRoute');
 const {createErrorResponse} = require('./utilities/jsonResponseCreator');
-const {handleIncorrectRoutes} = require('./controllers/appController');
+const {handleIncorrectRoutes, handleAppErrors} = require('./controllers/appController');
 
 
 app.set('views', path.join(__dirname, 'views'));
@@ -21,9 +21,7 @@ app.use('/api', apiRoute);
 
 app.all('*', handleIncorrectRoutes);
 
-app.use((err, req, res, next) => {
-    res.status(err.status).json(createErrorResponse(err.message, err.type, err.status));
-});
+app.use(handleAppErrors);
 
 app.listen(8080, () => {
     console.log('Server running on http://localhost:8080/');
