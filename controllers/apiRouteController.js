@@ -1,7 +1,7 @@
 const bookRepository = require("../repositories/bookRepository");
 const {validationResult, matchedData} = require("express-validator");
-const validationError = require("../utilities/validationError");
-const {createBookJsonResponse} = require('../utilities/jsonResponeCreator');
+const ValidationError = require("../utilities/ValidationError");
+const {createBookJsonResponse, createErrorResponse} = require('../utilities/jsonResponeCreator');
 
 
 const validationJsonErrorMessage = 'Given JSON is incorrectly formatted or missing some information.';
@@ -28,7 +28,7 @@ async function createBookRoute(req, res) {
         const responseJSON = createBookJsonResponse(newBook)
         res.json(responseJSON);
     } else {
-        throw new validationError(validationJsonErrorMessage,
+        throw new ValidationError(validationJsonErrorMessage,
             400, validationRes.array({onlyFirstError: true}));
     }
 }
@@ -44,7 +44,7 @@ async function displayBookByIdRoute(req, res) {
         res.json(responseJSON);
     }
     else {
-        throw new validationError(validationIdErrorMessage,
+        throw new ValidationError(validationIdErrorMessage,
             400, validationRes.array({onlyFirstError: true}));
     }
 }
@@ -61,7 +61,7 @@ async function patchBookRoute(req, res) {
         res.json(responseJSON);
     }
     else {
-        throw new validationError(validationJsonErrorMessage,
+        throw new ValidationError(validationJsonErrorMessage,
             400, validationRes.array({onlyFirstError: true}));
     }
 }
@@ -78,7 +78,7 @@ async function deleteBookRoute(req, res) {
         res.json(responseJSON);
     }
     else {
-        throw new validationError(validationIdErrorMessage,
+        throw new ValidationError(validationIdErrorMessage,
             400, validationRes.array({onlyFirstError: true}));
     }
 }
