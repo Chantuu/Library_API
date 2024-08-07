@@ -47,11 +47,20 @@ async function displayBookByIdRoute(req, res) {
 }
 
 async function patchBookRoute(req, res) {
-    const {bookId} = req.params;
-    const updatedBook = await bookRepository.getBookByIdAndUpdate(bookId, {...req.body});
-    await bookRepository.disconnectFromDb();
+    const validationRes = validationResult(req);
 
-    res.json(updatedBook);
+    if (validationRes.isEmpty()) {
+        const {bookId} = req.params;
+        const updatedBook = await bookRepository.getBookByIdAndUpdate(bookId, {...req.body});
+        await bookRepository.disconnectFromDb();
+
+        res.json(updatedBook);
+    }
+    else {
+        console.log(validationRes);
+        throw new validationError(validationIdErrorMessage,
+            400, validationRes.array({onlyFirstError: true}));
+    }
 }
 
 async function deleteBookRoute(req, res) {

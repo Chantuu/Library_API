@@ -24,7 +24,14 @@ router.get('/books/:bookId',
     param('bookId').isMongoId().custom(customValidators.validateBookExists),
     catchAsyncError(displayBookByIdRoute));
 
-router.patch('/books/:bookId', catchAsyncError(patchBookRoute));
+router.patch('/books/:bookId', checkExact([
+    body('name').isString().optional(),
+    body('author').isString().optional(),
+    body('genre').isString().optional(),
+    body('publishYear').isNumeric().optional(),
+    body('description').isString().optional()
+    ]),
+    catchAsyncError(patchBookRoute));
 
 router.delete('/books/:bookId', catchAsyncError(deleteBookRoute));
 
