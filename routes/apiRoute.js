@@ -33,7 +33,9 @@ router.patch('/books/:bookId', checkExact([
     ]),
     catchAsyncError(patchBookRoute));
 
-router.delete('/books/:bookId', catchAsyncError(deleteBookRoute));
+router.delete('/books/:bookId',
+    param('bookId').isMongoId().custom(customValidators.validateBookExists),
+    catchAsyncError(deleteBookRoute));
 
 // TODO basic error handler for testing error output
 router.use((err, req, res, next) => {

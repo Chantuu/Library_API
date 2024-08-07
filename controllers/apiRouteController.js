@@ -40,7 +40,6 @@ async function displayBookByIdRoute(req, res) {
         res.json(book);
     }
     else {
-        console.log(validationRes);
         throw new validationError(validationIdErrorMessage,
             400, validationRes.array({onlyFirstError: true}));
     }
@@ -57,18 +56,25 @@ async function patchBookRoute(req, res) {
         res.json(updatedBook);
     }
     else {
-        console.log(validationRes);
-        throw new validationError(validationIdErrorMessage,
+        throw new validationError(validationJsonErrorMessage,
             400, validationRes.array({onlyFirstError: true}));
     }
 }
 
 async function deleteBookRoute(req, res) {
-    const {bookId} = req.params;
-    const deletedBook = await bookRepository.getBookByIdAndDelete(bookId);
-    await bookRepository.disconnectFromDb();
+    const validationRes = validationResult(req);
 
-    res.json(deletedBook);
+    if (validationRes.isEmpty()) {
+        const {bookId} = req.params;
+        const deletedBook = await bookRepository.getBookByIdAndDelete(bookId);
+        await bookRepository.disconnectFromDb();
+
+        res.json(deletedBook);
+    }
+    else {
+        throw new validationError(validationIdErrorMessage,
+            400, validationRes.array({onlyFirstError: true}));
+    }
 }
 
 
