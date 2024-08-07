@@ -2,10 +2,7 @@ const bookRepository = require("../repositories/bookRepository");
 const {validationResult, matchedData} = require("express-validator");
 const ValidationError = require("../utilities/ValidationError");
 const {createBookJsonResponse, createErrorResponse} = require('../utilities/jsonResponeCreator');
-
-
-const validationJsonErrorMessage = 'Given JSON is incorrectly formatted or missing some information.';
-const validationIdErrorMessage = "The book by that ID doesn't exist. Please type correct ID.";
+const {validationJsonErrorMessage, validationIdErrorMessage} = require("../utilities/errorMessages");
 
 
 async function getBooksRoute(req, res) {
