@@ -5,6 +5,13 @@ const {createBookJsonResponse, createErrorResponse} = require('../utilities/json
 const {validationJsonErrorMessage, validationIdErrorMessage} = require("../utilities/errorMessages");
 
 
+/**
+ *  This function takes all available book documents from database
+ *  and sends to the end client as an array of book documents in JSON format.
+ *
+ * @param {import('express').request} req Express Request Object
+ * @param {import('express').response} res Express Response Object
+ */
 async function getBooksRoute(req, res) {
     const books = await bookRepository.getAllBooks();
     await bookRepository.disconnectFromDb();
@@ -13,6 +20,15 @@ async function getBooksRoute(req, res) {
     res.json(responseJSON);
 }
 
+/**
+ * This function after successful validation creates new book document
+ * by supplied data from the Request body and immediately saves this document
+ * in the database. If validation fails, this function throws ValidationError.
+ *
+ * @param {import('express').request} req Express Request Object
+ * @param {import('express').response} res Express Response Object
+ * @throws {ValidationError}
+ */
 async function createBookRoute(req, res) {
     const validationRes = validationResult(req);
     if (validationRes.isEmpty()) {
@@ -30,6 +46,15 @@ async function createBookRoute(req, res) {
     }
 }
 
+/**
+ * This function after successful validation searches for a book document
+ * by supplied id from the route param and returns it to the
+ * end client in JSON format. If validation fails, this function throws ValidationError.
+ *
+ * @param {import('express').request} req Express Request Object
+ * @param {import('express').response} res Express Response Object
+ * @throws {ValidationError}
+ */
 async function displayBookByIdRoute(req, res) {
     const validationRes = validationResult(req);
     if (validationRes.isEmpty()) {
@@ -46,6 +71,16 @@ async function displayBookByIdRoute(req, res) {
     }
 }
 
+/**
+ * This function after successful validation finds existing book document
+ * by supplied id from the route param and updates it with the supplied data from
+ * the Request body. After the operation, newly created book document is returned in JSON format.
+ * If validation fails, this function throws ValidationError.
+ *
+ * @param {import('express').request} req Express Request Object
+ * @param {import('express').response} res Express Response Object
+ * @throws {ValidationError}
+ */
 async function patchBookRoute(req, res) {
     const validationRes = validationResult(req);
 
@@ -63,6 +98,16 @@ async function patchBookRoute(req, res) {
     }
 }
 
+/**
+ * This function after successful validation searches for a book document
+ * by supplied id from the route param and deletes it from the database.
+ * After that operation, deleted book document is returned to the end user in JSON format.
+ * If validation fails, this function throws ValidationError.
+ *
+ * @param {import('express').request} req Express Request Object
+ * @param {import('express').response} res Express Response Object
+ * @throws {ValidationError}
+ */
 async function deleteBookRoute(req, res) {
     const validationRes = validationResult(req);
 
@@ -80,6 +125,15 @@ async function deleteBookRoute(req, res) {
     }
 }
 
+/**
+ * This error handler is formatting and sending errors
+ * in JSON format to the end client.
+ *
+ * @param {ValidationError} err
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {callback} next
+ */
 function handleRouteErrors(err, req, res, next) {
     res.status(err.statusCode).json(createErrorResponse(err.message, 'validation',
         err.statusCode, err.innerValidationErrors));
