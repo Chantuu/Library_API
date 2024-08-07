@@ -4,7 +4,7 @@ const path = require('path');
 const methodOverride = require('method-override');
 const app = express();
 const apiRoute = require('./routes/apiRoute');
-const {createErrorResponse} = require('./utilities/jsonResponeCreator');
+const {createErrorResponse} = require('./utilities/jsonResponseCreator');
 
 
 app.set('views', path.join(__dirname, 'views'));
