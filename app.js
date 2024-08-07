@@ -25,6 +25,9 @@ app.all('*', (req, res) => {
         'path_Not_Found', statusCode));
 });
 
+app.use((err, req, res, next) => {
+    res.status(err.status).json(createErrorResponse(err.message, err.type, err.status));
+});
 
 app.listen(8080, () => {
     console.log('Server running on http://localhost:8080/');
