@@ -14,10 +14,12 @@ const customValidators = require('../utilities/customValidators');
 
 router.get('/books', catchAsyncError(getBooksRoute));
 
-router.post('/books', checkExact([body('name').isString().notEmpty(),
+router.post('/books', checkExact([
+    body('name').isString().notEmpty(),
     body('author').isString().notEmpty(),
     body('genre').isString().notEmpty(),
-    body('publishYear').isNumeric().notEmpty()]),
+    body('publishYear').isNumeric().notEmpty(),
+    body('description').isString().optional()]),
     catchAsyncError(createBookRoute));
 
 router.get('/books/:bookId',
