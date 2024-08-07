@@ -5,7 +5,8 @@ const {
     createBookRoute,
     displayBookByIdRoute,
     patchBookRoute,
-    deleteBookRoute
+    deleteBookRoute,
+    handleRouteErrors
 } = require('../controllers/apiRouteController');
 const catchAsyncError = require('../utilities/catchAsyncError');
 const {checkExact, body, param} = require("express-validator");
@@ -40,8 +41,6 @@ router.delete('/books/:bookId',
     catchAsyncError(deleteBookRoute));
 
 // TODO basic error handler for testing error output
-router.use((err, req, res, next) => {
-    res.status(err.statusCode).json(err);
-});
+router.use(handleRouteErrors);
 
 module.exports = router;

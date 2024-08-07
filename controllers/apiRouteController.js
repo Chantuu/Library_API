@@ -83,9 +83,15 @@ async function deleteBookRoute(req, res) {
     }
 }
 
+function handleRouteErrors(err, req, res, next) {
+    res.status(err.statusCode).json(createErrorResponse(err.message, 'validation',
+        err.statusCode, err.innerValidationErrors));
+}
+
 
 module.exports.getBooksRoute = getBooksRoute;
 module.exports.createBookRoute = createBookRoute;
 module.exports.displayBookByIdRoute = displayBookByIdRoute;
 module.exports.patchBookRoute = patchBookRoute;
 module.exports.deleteBookRoute = deleteBookRoute;
+module.exports.handleRouteErrors = handleRouteErrors;
