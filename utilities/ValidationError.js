@@ -11,7 +11,7 @@ class ValidationError extends Error {
      * @param {Number} statusCode HTTP status code
      * @param {Array} innerValidationErrors Array of any additional errors (optional)
      */
-    constructor(message, statusCode, innerValidationErrors) {
+    constructor(message, statusCode, innerValidationErrors = []) {
         super(message);
         this.statusCode = statusCode;
         this.innerValidationErrors = innerValidationErrors;
