@@ -10,20 +10,24 @@ const {
 } = require('../controllers/apiRouteController');
 const catchAsyncError = require('../utilities/catchAsyncError');
 const {checkExact, body, param} = require("express-validator");
-const customValidators = require('../utilities/customValidators');
+const {validateContentType, validateBookExists} = require('../utilities/customValidators');
 
 
 /**
  * This route returns an array of book documents in JSON format.
  */
-router.get('/books', catchAsyncError(getBooksRoute));
+router.get('/books',
+    validateContentType('none'),
+    catchAsyncError(getBooksRoute));
 
 /**
  * This route validates request body for having 4 exact fields
  * required for new book document creation. Returns newly created
  * book document in JSON format. If fails, throws ValidateError.
  */
-router.post('/books', checkExact([
+router.post('/books',
+    validateContentType('application/json'),
+    checkExact([
     body('name').isString().notEmpty(),
     body('author').isString().notEmpty(),
     body('genre').isString().notEmpty(),
@@ -37,7 +41,8 @@ router.post('/books', checkExact([
  * ValidateError.
  */
 router.get('/books/:bookId',
-    param('bookId').isMongoId().custom(customValidators.validateBookExists),
+    validateContentType('none'),
+    param('bookId').isMongoId().custom(validateBookExists),
     catchAsyncError(displayBookByIdRoute));
 
 /**
@@ -46,7 +51,9 @@ router.get('/books/:bookId',
  * and updates it with relevant information. Returns updated book in JSON format.
  * If fails, throws ValidateError.
  */
-router.patch('/books/:bookId', checkExact([
+router.patch('/books/:bookId',
+    validateContentType('application/json'),
+    checkExact([
     body('name').isString().optional(),
     body('author').isString().optional(),
     body('genre').isString().optional(),
@@ -61,7 +68,8 @@ router.patch('/books/:bookId', checkExact([
  * If fails, throws ValidateError.
  */
 router.delete('/books/:bookId',
-    param('bookId').isMongoId().custom(customValidators.validateBookExists),
+    validateContentType('none'),
+    param('bookId').isMongoId().custom(validateBookExists),
     catchAsyncError(deleteBookRoute));
 
 /**
