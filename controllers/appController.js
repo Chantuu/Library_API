@@ -1,7 +1,7 @@
 const {createErrorResponse} = require("../utilities/jsonResponseCreator");
 const AppError = require("../utilities/AppError");
 const {Error: mongooseError} = require('mongoose');
-const {incorrectAddressErrorMessage} = require('../utilities/errorMessages');
+const {incorrectAddressErrorMessage, validationJsonErrorMessage} = require('../utilities/errorMessages');
 
 /**
  * This method handles any incoming requests
@@ -25,13 +25,25 @@ function handleIncorrectRoutes(req, res) {
  * @param {Function} next
  */
 function handleAppErrors(err, req, res, next) {
+    /* This conditional checks, if incoming error is instance of
+    * mongoose Error. This check is done for correct HTTP status code
+    * assigment.
+    */
     if (err instanceof mongooseError.MongooseServerSelectionError) {
         res.status(500);
     }
     else {
         res.status(400);
     }
-    console.log(err);
+
+    /* This conditional checks, if incoming error is caused by incorrect JSON syntax.
+    * If that is the case, err object is converted into AppError object for proper error
+    * JSON output.
+    */
+    if (err instanceof SyntaxError &&  err.type === 'entity.parse.failed') {
+        err = new AppError(validationJsonErrorMessage);
+    }
+
     res.json(createErrorResponse(err));
 }
 
