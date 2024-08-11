@@ -31,6 +31,7 @@ function handleAppErrors(err, req, res, next) {
     else {
         res.status(400);
     }
+    console.log(err);
     res.json(createErrorResponse(err));
 }
 

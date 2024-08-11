@@ -41,7 +41,8 @@ router.post('/books',
  */
 router.get('/books/:bookId',
     validateContentType('none'),
-    param('bookId').isMongoId().custom(validateBookExists),
+    param('bookId').isMongoId(),
+    catchAsyncError(validateBookExists),
     catchAsyncError(displayBookByIdRoute));
 
 /**
@@ -52,7 +53,8 @@ router.get('/books/:bookId',
  */
 router.patch('/books/:bookId',
     validateContentType('application/json'),
-    param('bookId').isMongoId().custom(validateBookExists),
+    param('bookId').isMongoId(),
+    catchAsyncError(validateBookExists),
     checkExact([
     body('name').isString().optional(),
     body('author').isString().optional(),
@@ -69,7 +71,8 @@ router.patch('/books/:bookId',
  */
 router.delete('/books/:bookId',
     validateContentType('none'),
-    param('bookId').isMongoId().custom(validateBookExists),
+    param('bookId').isMongoId(),
+    catchAsyncError(validateBookExists),
     catchAsyncError(deleteBookRoute));
 
 module.exports = router;

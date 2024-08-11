@@ -1,23 +1,30 @@
 const bookRepository = require("../repositories/bookRepository");
 const AppError = require("./AppError");
-const {validationContentTypeErrorMessage} = require("./errorMessages")
+const {validationContentTypeErrorMessage, validationIdErrorMessage} = require("./errorMessages")
+
 
 /**
- * This validator checks for document existence by supplied bookId parameter.
- * If corresponding document exists, true is returned, else false.
+ * This function validates the existence of
+ * the book document by the bookId parameter.
+ * If specified document does not exist,
+ * AppError is thrown.
  *
- * @param {ObjectId} bookId Book document id
- * @returns {Promise<boolean>} Boolean
+ * @param {import('express').request} req Request Object
+ * @param {import('express').response} res Response Object
+ * @param {function} next Callback function
+ * @returns {Promise<void>}
+ * @throws {AppError}
  */
-async function validateBookId(bookId) {
+async function validateBookId(req, res, next) {
+    const {bookId} = req.params;
     const result = await bookRepository.getBookById(bookId);
     await bookRepository.disconnectFromDb();
-    
+
     if (result) {
-        return true;
+        next();
     }
     else {
-        throw new Error();
+        throw new AppError(validationIdErrorMessage);
     }
 }
 
