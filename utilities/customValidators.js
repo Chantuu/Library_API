@@ -17,7 +17,7 @@ async function validateBookId(bookId) {
         return true;
     }
     else {
-        throw new Error(`Book with id ${bookId} not found`);
+        throw new Error();
     }
 }
 
