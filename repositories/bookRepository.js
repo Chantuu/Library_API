@@ -9,7 +9,7 @@ class BookRepository {
      * @returns {Promise<Mongoose>} Promise
      */
     static #connectToDb() {
-        return mongoose.connect(process.env.DATABASE_URI);
+        return mongoose.connect(process.env.DATABASE_URI, {serverSelectionTimeoutMS: 10000});
     }
 
     /**
