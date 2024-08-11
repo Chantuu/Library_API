@@ -37,14 +37,14 @@ function validateContentType(allowedContentType) {
                 next();
             }
             else {
-                throw new AppError(validationContentTypeErrorMessage, 400);
+                throw new AppError(validationContentTypeErrorMessage);
             }
         }
         else if (allowedContentType === req.get('content-type')) {
             next();
         }
         else {
-            throw new AppError(validationContentTypeErrorMessage, 400);
+            throw new AppError(validationContentTypeErrorMessage);
         }
     }
 }

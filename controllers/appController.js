@@ -11,10 +11,7 @@ const {incorrectAddressErrorMessage} = require('../utilities/errorMessages');
  * @param {import('express').response} res Response Object
  */
 function handleIncorrectRoutes(req, res) {
-    const statusCode = 404
-    res.status(statusCode).json(
-        createErrorResponse(new AppError(incorrectAddressErrorMessage,
-            statusCode)));
+    res.status(404).json(createErrorResponse(new AppError(incorrectAddressErrorMessage)));
 }
 
 /**

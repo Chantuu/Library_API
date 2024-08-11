@@ -27,7 +27,7 @@ async function getBooksRoute(req, res) {
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
- * @throws {ValidationError}
+ * @throws {AppError}
  */
 async function createBookRoute(req, res) {
     const validationRes = validationResult(req);
@@ -41,8 +41,7 @@ async function createBookRoute(req, res) {
         const responseJSON = createBookJsonResponse(newBook)
         res.json(responseJSON);
     } else {
-        throw new AppError(validationJsonErrorMessage,
-            400, validationRes.array({onlyFirstError: true}));
+        throw new AppError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
     }
 }
 
@@ -53,7 +52,7 @@ async function createBookRoute(req, res) {
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
- * @throws {ValidationError}
+ * @throws {AppError}
  */
 async function displayBookByIdRoute(req, res) {
     const validationRes = validationResult(req);
@@ -66,8 +65,7 @@ async function displayBookByIdRoute(req, res) {
         res.json(responseJSON);
     }
     else {
-        throw new AppError(validationIdErrorMessage,
-            400, validationRes.array({onlyFirstError: true}));
+        throw new AppError(validationIdErrorMessage, validationRes.array({onlyFirstError: true}));
     }
 }
 
@@ -79,7 +77,7 @@ async function displayBookByIdRoute(req, res) {
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
- * @throws {ValidationError}
+ * @throws {AppError}
  */
 async function patchBookRoute(req, res) {
     const validationRes = validationResult(req);
@@ -93,8 +91,7 @@ async function patchBookRoute(req, res) {
         res.json(responseJSON);
     }
     else {
-        throw new AppError(validationJsonErrorMessage,
-            400, validationRes.array({onlyFirstError: true}));
+        throw new AppError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
     }
 }
 
@@ -106,7 +103,7 @@ async function patchBookRoute(req, res) {
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
- * @throws {ValidationError}
+ * @throws {AppError}
  */
 async function deleteBookRoute(req, res) {
     const validationRes = validationResult(req);
@@ -120,8 +117,7 @@ async function deleteBookRoute(req, res) {
         res.json(responseJSON);
     }
     else {
-        throw new AppError(validationIdErrorMessage,
-            400, validationRes.array({onlyFirstError: true}));
+        throw new AppError(validationIdErrorMessage, validationRes.array({onlyFirstError: true}));
     }
 }
 
