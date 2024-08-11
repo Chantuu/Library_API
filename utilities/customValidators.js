@@ -1,5 +1,5 @@
 const bookRepository = require("../repositories/bookRepository");
-const ValidationError = require("./ValidationError");
+const AppError = require("./AppError");
 const {validationContentTypeErrorMessage} = require("./errorMessages")
 
 /**
@@ -24,7 +24,7 @@ async function validateBookId(bookId) {
 /**
  * This route validates incoming requests content type. It returns function
  * for express middleware consumption and checks if allowed content type is same as
- * incoming requests content type. If false, throws ValidationError.
+ * incoming requests content type. If false, throws AppError.
  *
  * @param {string} allowedContentType Allowed content type for the route
  * @returns {(function((import('express').request), (import('express').response), function): void)|*}
@@ -37,14 +37,14 @@ function validateContentType(allowedContentType) {
                 next();
             }
             else {
-                throw new ValidationError(validationContentTypeErrorMessage, 400);
+                throw new AppError(validationContentTypeErrorMessage, 400);
             }
         }
         else if (allowedContentType === req.get('content-type')) {
             next();
         }
         else {
-            throw new ValidationError(validationContentTypeErrorMessage, 400);
+            throw new AppError(validationContentTypeErrorMessage, 400);
         }
     }
 }
