@@ -1,9 +1,9 @@
 /**
- * This error class extends base Error class
- * and is used for representing any validation errors
+ * This error class is used for
+ * representing any validation errors
  * coming from express-validator.
  */
-class ValidationError extends Error {
+class ValidationError {
     /**
      * Class constructor
      *
@@ -12,7 +12,7 @@ class ValidationError extends Error {
      * @param {Array} innerValidationErrors Array of any additional errors (optional)
      */
     constructor(message, statusCode, innerValidationErrors = []) {
-        super(message);
+        this.message = message;
         this.statusCode = statusCode;
         this.innerValidationErrors = innerValidationErrors;
     }
