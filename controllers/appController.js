@@ -1,6 +1,7 @@
 const {createErrorResponse} = require("../utilities/jsonResponseCreator");
 const ValidationError = require("../utilities/ValidationError");
 const {Error: mongooseError} = require('mongoose');
+const {incorrectAddressErrorMessage} = require('../utilities/errorMessages');
 
 /**
  * This method handles any incoming requests
@@ -12,7 +13,7 @@ const {Error: mongooseError} = require('mongoose');
 function handleIncorrectRoutes(req, res) {
     const statusCode = 404
     res.status(statusCode).json(
-        createErrorResponse(new ValidationError('Incorrect address. Please ensure, that you are using correct method on correct path',
+        createErrorResponse(new ValidationError(incorrectAddressErrorMessage,
             statusCode)));
 }
 
