@@ -8,7 +8,6 @@ const {handleIncorrectRoutes, handleAppErrors} = require('./controllers/appContr
 
 
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 
 app.use(methodOverride('_method')); //For using making any types of HTTP request from HTML Forms
