@@ -24,26 +24,14 @@ function createBookJsonResponse(book) {
 }
 
 /**
+ * This method creates new error JSON representative Javascript object
+ * containing an error
  *
- * This method creates new error JSON representative Javascript
- * object containing an error in result field.
- *
- * @param {String} errorMessage Error message
- * @param {String} type Type of error
- * @param {Number} statusCode HTTP status code
- * @param {Array} innerErrors Any additional errors (optional)
+ * @param {Error} err Error Object
  * @returns {{result: string, state: Object}}
  */
-function createErrorResponse(errorMessage, type, statusCode, innerErrors=[]) {
-    const resultObj = {
-        errorMessage: errorMessage,
-        type: type,
-        statusCode: statusCode
-    };
-
-    if (innerErrors.length) {
-        resultObj.innerErrors = innerErrors;
-    }
+function createErrorResponse(err) {
+    const resultObj = {...err};
 
     return createBaseJsonResponse('error', resultObj);
 }

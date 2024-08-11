@@ -5,8 +5,7 @@ const {
     createBookRoute,
     displayBookByIdRoute,
     patchBookRoute,
-    deleteBookRoute,
-    handleRouteErrors
+    deleteBookRoute
 } = require('../controllers/apiRouteController');
 const catchAsyncError = require('../utilities/catchAsyncError');
 const {checkExact, body, param} = require("express-validator");
@@ -53,6 +52,7 @@ router.get('/books/:bookId',
  */
 router.patch('/books/:bookId',
     validateContentType('application/json'),
+    param('bookId').isMongoId().custom(validateBookExists),
     checkExact([
     body('name').isString().optional(),
     body('author').isString().optional(),
@@ -71,11 +71,5 @@ router.delete('/books/:bookId',
     validateContentType('none'),
     param('bookId').isMongoId().custom(validateBookExists),
     catchAsyncError(deleteBookRoute));
-
-/**
- * This route handles all thrown errors
- * from above routes in this route collection.
- */
-router.use(handleRouteErrors);
 
 module.exports = router;

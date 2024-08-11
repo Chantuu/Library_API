@@ -125,24 +125,9 @@ async function deleteBookRoute(req, res) {
     }
 }
 
-/**
- * This error handler is formatting and sending errors
- * in JSON format to the end client.
- *
- * @param {ValidationError} err
- * @param {import('express').request} req
- * @param {import('express').response} res
- * @param {callback} next
- */
-function handleRouteErrors(err, req, res, next) {
-    res.status(err.statusCode).json(createErrorResponse(err.message, 'validation',
-        err.statusCode, err.innerValidationErrors));
-}
-
 
 module.exports.getBooksRoute = getBooksRoute;
 module.exports.createBookRoute = createBookRoute;
 module.exports.displayBookByIdRoute = displayBookByIdRoute;
 module.exports.patchBookRoute = patchBookRoute;
 module.exports.deleteBookRoute = deleteBookRoute;
-module.exports.handleRouteErrors = handleRouteErrors;

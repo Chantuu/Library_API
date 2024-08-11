@@ -4,7 +4,6 @@ const path = require('path');
 const methodOverride = require('method-override');
 const app = express();
 const apiRoute = require('./routes/apiRoute');
-const {createErrorResponse} = require('./utilities/jsonResponseCreator');
 const {handleIncorrectRoutes, handleAppErrors} = require('./controllers/appController');
 
 
@@ -17,11 +16,11 @@ app.use(express.json()); //For parsing any requests of application/json type
 app.use(express.static(path.join(__dirname, 'static'))); //For serving static files
 
 
-app.use('/api', apiRoute);
+app.use('/api', apiRoute); // Uses defined routes in apiRoute.js
 
-app.all('*', handleIncorrectRoutes);
 
-app.use(handleAppErrors);
+app.all('*', handleIncorrectRoutes); // Handles undefined routes
+app.use(handleAppErrors); // Handles all errors.
 
 app.listen(8080, () => {
     console.log('Server running on http://localhost:8080/');

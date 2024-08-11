@@ -1,4 +1,6 @@
 const {createErrorResponse} = require("../utilities/jsonResponseCreator");
+const ValidationError = require("../utilities/ValidationError");
+const {Error: mongooseError} = require('mongoose');
 
 /**
  * This method handles any incoming requests
@@ -10,12 +12,14 @@ const {createErrorResponse} = require("../utilities/jsonResponseCreator");
 function handleIncorrectRoutes(req, res) {
     const statusCode = 404
     res.status(statusCode).json(
-        createErrorResponse('Incorrect address. Please ensure, that you are using correct method on correct path',
-            'path_Not_Found', statusCode))
+        createErrorResponse(new ValidationError('Incorrect address. Please ensure, that you are using correct method on correct path',
+            statusCode)));
 }
 
 /**
  * This error handler sends errors in JSON format to the end user.
+ * If any error is incoming from mongoose, it automatically is considered
+ * internal server error.
  *
  * @param {import('../utilities/ValidationError')} err
  * @param {import('express').request} req
@@ -23,7 +27,13 @@ function handleIncorrectRoutes(req, res) {
  * @param {Function} next
  */
 function handleAppErrors(err, req, res, next) {
-    res.status(err.status).json(createErrorResponse(err.message, err.type, err.status));
+    if (err instanceof mongooseError.MongooseServerSelectionError) {
+        res.status(500);
+    }
+    else {
+        res.status(400);
+    }
+    res.json(createErrorResponse(err));
 }
 
 module.exports.handleIncorrectRoutes = handleIncorrectRoutes;
