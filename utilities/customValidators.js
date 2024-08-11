@@ -1,10 +1,11 @@
 const bookRepository = require("../repositories/bookRepository");
 const AppError = require("./AppError");
-const {validationContentTypeErrorMessage, validationIdErrorMessage} = require("./errorMessages")
+const {validationContentTypeErrorMessage, validationIdErrorMessage, validationIdFormatErrorMessage} = require("./errorMessages")
+const mongoose = require("mongoose");
 
 
 /**
- * This function validates the existence of
+ * This function validates id format and the existence of
  * the book document by the bookId parameter.
  * If specified document does not exist,
  * AppError is thrown.
@@ -17,6 +18,10 @@ const {validationContentTypeErrorMessage, validationIdErrorMessage} = require(".
  */
 async function validateBookId(req, res, next) {
     const {bookId} = req.params;
+    if (!mongoose.Types.ObjectId.isValid(bookId)) {
+        throw new AppError(validationIdFormatErrorMessage);
+    }
+
     const result = await bookRepository.getBookById(bookId);
     await bookRepository.disconnectFromDb();
 

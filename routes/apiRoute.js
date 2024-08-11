@@ -8,7 +8,7 @@ const {
     deleteBookRoute
 } = require('../controllers/apiRouteController');
 const catchAsyncError = require('../utilities/catchAsyncError');
-const {checkExact, body, param} = require("express-validator");
+const {checkExact, body} = require("express-validator");
 const {validateContentType, validateBookExists} = require('../utilities/customValidators');
 
 
@@ -41,7 +41,6 @@ router.post('/books',
  */
 router.get('/books/:bookId',
     validateContentType('none'),
-    param('bookId').isMongoId(),
     catchAsyncError(validateBookExists),
     catchAsyncError(displayBookByIdRoute));
 
@@ -53,7 +52,6 @@ router.get('/books/:bookId',
  */
 router.patch('/books/:bookId',
     validateContentType('application/json'),
-    param('bookId').isMongoId(),
     catchAsyncError(validateBookExists),
     checkExact([
     body('name').isString().optional(),
@@ -71,7 +69,6 @@ router.patch('/books/:bookId',
  */
 router.delete('/books/:bookId',
     validateContentType('none'),
-    param('bookId').isMongoId(),
     catchAsyncError(validateBookExists),
     catchAsyncError(deleteBookRoute));
 
