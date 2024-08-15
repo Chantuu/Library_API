@@ -24,9 +24,12 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *     - genre
  *     - publishYear
  *    properties:
- *     id:
+ *     _id:
  *      type: string
  *      description: Unique identifier of the book
+ *     __v:
+ *      type: integer
+ *      description: Internal revision of the document in MongoDB
  *     name:
  *      type: string
  *      description: Title of the book
@@ -42,6 +45,13 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *     description:
  *      type: string
  *      description: Description of the book
+ *    example:
+ *     _id: 66b8d272689cd84f6a762a23
+ *     __v: 0
+ *     name: Twenty Thousand Leagues Under the Seas
+ *     author: Jules Verne
+ *     genre: Adventure
+ *     description: Twenty Thousand Leagues Under the Seas is a science fiction adventure novel by the French writer Jules Verne.
  */
 
 
@@ -53,9 +63,6 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  */
 
 
-/**
- * This route returns an array of book documents in JSON format.
- */
 router.get('/books',
     validateContentType('none'),
     catchAsyncError(getBooksRoute));
