@@ -13,6 +13,39 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
 
 
 /**
+ * @swagger
+ * components:
+ *  schemas:
+ *   Book:
+ *    type: object
+ *    required:
+ *     - name
+ *     - author
+ *     - genre
+ *     - publishYear
+ *    properties:
+ *     id:
+ *      type: string
+ *      description: Unique identifier of the book
+ *     name:
+ *      type: string
+ *      description: Title of the book
+ *     author:
+ *      type: string
+ *      description: Author of the book
+ *     genre:
+ *      type: string
+ *      description: Genre of the book
+ *     publishYear:
+ *      type: integer
+ *      description: Year, when the book was published
+ *     description:
+ *      type: string
+ *      description: Description of the book
+ */
+
+
+/**
  * This route returns an array of book documents in JSON format.
  */
 router.get('/books',
