@@ -3,7 +3,7 @@
  * representing any validation errors
  * coming from express-validator.
  */
-class AppError {
+class ValidationError {
     /**
      * Class constructor
      *
@@ -16,4 +16,4 @@ class AppError {
     }
 }
 
-module.exports = AppError;
+module.exports.ValidationError = ValidationError;

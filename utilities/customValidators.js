@@ -1,5 +1,5 @@
 const bookRepository = require("../repositories/bookRepository");
-const AppError = require("./AppError");
+const {ValidationError} = require("./AppError");
 const {validationContentTypeErrorMessage, validationIdErrorMessage, validationIdFormatErrorMessage} = require("./errorMessages")
 const mongoose = require("mongoose");
 
@@ -14,12 +14,12 @@ const mongoose = require("mongoose");
  * @param {import('express').response} res Response Object
  * @param {function} next Callback function
  * @returns {Promise<void>}
- * @throws {AppError}
+ * @throws {ValidationError}
  */
 async function validateBookId(req, res, next) {
     const {bookId} = req.params;
     if (!mongoose.Types.ObjectId.isValid(bookId)) {
-        throw new AppError(validationIdFormatErrorMessage);
+        throw new ValidationError(validationIdFormatErrorMessage);
     }
 
     const result = await bookRepository.getBookById(bookId);
@@ -29,7 +29,7 @@ async function validateBookId(req, res, next) {
         next();
     }
     else {
-        throw new AppError(validationIdErrorMessage);
+        throw new ValidationError(validationIdErrorMessage);
     }
 }
 
@@ -49,14 +49,14 @@ function validateContentType(allowedContentType) {
                 next();
             }
             else {
-                throw new AppError(validationContentTypeErrorMessage);
+                throw new ValidationError(validationContentTypeErrorMessage);
             }
         }
         else if (allowedContentType === req.get('content-type')) {
             next();
         }
         else {
-            throw new AppError(validationContentTypeErrorMessage);
+            throw new ValidationError(validationContentTypeErrorMessage);
         }
     }
 }

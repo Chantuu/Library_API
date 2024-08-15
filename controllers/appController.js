@@ -1,5 +1,5 @@
 const {createErrorResponse} = require("../utilities/jsonResponseCreator");
-const AppError = require("../utilities/AppError");
+const {ValidationError} = require("../utilities/AppError");
 const {Error: mongooseError} = require('mongoose');
 const {incorrectAddressErrorMessage, validationJsonErrorMessage} = require('../utilities/errorMessages');
 
@@ -11,7 +11,7 @@ const {incorrectAddressErrorMessage, validationJsonErrorMessage} = require('../u
  * @param {import('express').response} res Response Object
  */
 function handleIncorrectRoutes(req, res) {
-    res.status(404).json(createErrorResponse(new AppError(incorrectAddressErrorMessage)));
+    res.status(404).json(createErrorResponse(new ValidationError(incorrectAddressErrorMessage)));
 }
 
 /**
@@ -41,7 +41,7 @@ function handleAppErrors(err, req, res, next) {
     * JSON output.
     */
     if (err instanceof SyntaxError &&  err.type === 'entity.parse.failed') {
-        err = new AppError(validationJsonErrorMessage);
+        err = new ValidationError(validationJsonErrorMessage);
     }
 
     res.json(createErrorResponse(err));
