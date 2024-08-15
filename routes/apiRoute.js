@@ -63,6 +63,30 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  */
 
 
+/**
+ * @swagger
+ * /api/books:
+ *  get:
+ *   summary: This route returns the list of all available books.
+ *   tags: [Books]
+ *   requestBody:
+ *    required: false
+ *    content:
+ *     none:
+ *   responses:
+ *    200:
+ *     description: Successfully returned list containing all books
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: array
+ *        items:
+ *         $ref: "#/components/schemas/Book"
+ *    400:
+ *     description: Bad Request
+ *    500:
+ *     description: Internal Server Error
+ */
 router.get('/books',
     validateContentType('none'),
     catchAsyncError(getBooksRoute));
