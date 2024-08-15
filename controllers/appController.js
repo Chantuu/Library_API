@@ -29,7 +29,7 @@ function handleAppErrors(err, req, res, next) {
     * mongoose Error. This check is done for correct HTTP status code
     * assigment.
     */
-    if (err instanceof mongooseError.MongooseServerSelectionError) {
+    if (err instanceof mongooseError) {
         res.status(500);
     }
     else if (err instanceof NotFoundError) {
