@@ -1,5 +1,5 @@
 const {createErrorResponse} = require("../utilities/jsonResponseCreator");
-const {ValidationError} = require("../utilities/AppError");
+const {ValidationError, NotFoundError} = require("../utilities/AppError");
 const {Error: mongooseError} = require('mongoose');
 const {incorrectAddressErrorMessage, validationJsonErrorMessage} = require('../utilities/errorMessages');
 
@@ -31,6 +31,9 @@ function handleAppErrors(err, req, res, next) {
     */
     if (err instanceof mongooseError.MongooseServerSelectionError) {
         res.status(500);
+    }
+    else if (err instanceof NotFoundError) {
+        res.status(404);
     }
     else {
         res.status(400);

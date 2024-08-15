@@ -1,5 +1,5 @@
 const bookRepository = require("../repositories/bookRepository");
-const {ValidationError} = require("./AppError");
+const {ValidationError, NotFoundError} = require("./AppError");
 const {validationContentTypeErrorMessage, validationIdErrorMessage, validationIdFormatErrorMessage} = require("./errorMessages")
 const mongoose = require("mongoose");
 
@@ -7,14 +7,15 @@ const mongoose = require("mongoose");
 /**
  * This function validates id format and the existence of
  * the book document by the bookId parameter.
+ * If id format is incorrect, ValidationError is thrown.
  * If specified document does not exist,
- * AppError is thrown.
+ * NotFound is thrown.
  *
  * @param {import('express').request} req Request Object
  * @param {import('express').response} res Response Object
  * @param {function} next Callback function
  * @returns {Promise<void>}
- * @throws {ValidationError}
+ * @throws {ValidationError, NotFoundError}
  */
 async function validateBookId(req, res, next) {
     const {bookId} = req.params;
@@ -29,7 +30,7 @@ async function validateBookId(req, res, next) {
         next();
     }
     else {
-        throw new ValidationError(validationIdErrorMessage);
+        throw new NotFoundError(validationIdErrorMessage);
     }
 }
 
