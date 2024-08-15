@@ -46,6 +46,14 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
 
 
 /**
+ * @swagger
+ * tags:
+ *  name: Books
+ *  description: Routes related to the book management
+ */
+
+
+/**
  * This route returns an array of book documents in JSON format.
  */
 router.get('/books',
