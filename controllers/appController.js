@@ -1,5 +1,5 @@
 const {createErrorResponse} = require("../utilities/jsonResponseCreator");
-const {ValidationError, NotFoundError} = require("../utilities/AppError");
+const {ValidationError, NotFoundError} = require("../utilities/errors");
 const {Error: mongooseError} = require('mongoose');
 const {incorrectAddressErrorMessage, validationJsonErrorMessage} = require('../utilities/errorMessages');
 
@@ -19,7 +19,7 @@ function handleIncorrectRoutes(req, res) {
  * If any error is incoming from mongoose, it automatically is considered
  * internal server error.
  *
- * @param {import('../utilities/AppError')} err
+ * @param {import('../utilities/errors')} err
  * @param {import('express').request} req
  * @param {import('express').response} res
  * @param {Function} next

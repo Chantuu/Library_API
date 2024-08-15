@@ -1,6 +1,6 @@
 const bookRepository = require("../repositories/bookRepository");
 const {validationResult, matchedData} = require("express-validator");
-const {ValidationError} = require("../utilities/AppError");
+const {ValidationError} = require("../utilities/errors");
 const {createBookJsonResponse, createErrorResponse} = require('../utilities/jsonResponseCreator');
 const {validationJsonErrorMessage, validationIdErrorMessage} = require("../utilities/errorMessages");
 

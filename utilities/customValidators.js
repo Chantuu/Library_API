@@ -1,5 +1,5 @@
 const bookRepository = require("../repositories/bookRepository");
-const {ValidationError, NotFoundError} = require("./AppError");
+const {ValidationError, NotFoundError} = require("./errors");
 const {validationContentTypeErrorMessage, validationIdErrorMessage, validationIdFormatErrorMessage} = require("./errorMessages")
 const mongoose = require("mongoose");
 
