@@ -23,7 +23,7 @@ async function getBooksRoute(req, res) {
 /**
  * This function after successful validation creates new book document
  * by supplied data from the Request body and immediately saves this document
- * in the database. If validation fails, this function throws AppError.
+ * in the database. If validation fails, this function throws ValidationError.
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
@@ -48,7 +48,7 @@ async function createBookRoute(req, res) {
 /**
  * This function after successful validation searches for a book document
  * by supplied id from the route param and returns it to the
- * end client in JSON format. If validation fails, this function throws AppError.
+ * end client in JSON format. If validation fails, this function throws ValidationError.
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
@@ -73,7 +73,7 @@ async function displayBookByIdRoute(req, res) {
  * This function after successful validation finds existing book document
  * by supplied id from the route param and updates it with the supplied data from
  * the Request body. After the operation, newly created book document is returned in JSON format.
- * If validation fails, this function throws AppError.
+ * If validation fails, this function throws ValidationError.
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
@@ -99,7 +99,7 @@ async function patchBookRoute(req, res) {
  * This function after successful validation searches for a book document
  * by supplied id from the route param and deletes it from the database.
  * After that operation, deleted book document is returned to the end user in JSON format.
- * If validation fails, this function throws AppError.
+ * If validation fails, this function throws ValidationError.
  *
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object

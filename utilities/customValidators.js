@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
  * the book document by the bookId parameter.
  * If id format is incorrect, ValidationError is thrown.
  * If specified document does not exist,
- * NotFound is thrown.
+ * NotFoundError is thrown.
  *
  * @param {import('express').request} req Request Object
  * @param {import('express').response} res Response Object
