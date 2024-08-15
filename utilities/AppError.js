@@ -16,4 +16,20 @@ class ValidationError {
     }
 }
 
+/**
+ * This error class is used for
+ * representing any 404/Not found errors.
+ */
+class NotFoundError {
+    /**
+     * Class constructor
+     *
+     * @param {String} message Error message
+     */
+    constructor(message) {
+        this.message = message;
+    }
+}
+
 module.exports.ValidationError = ValidationError;
+module.exports.NotFoundError = NotFoundError;
