@@ -268,9 +268,37 @@ router.patch('/books/:bookId',
     catchAsyncError(patchBookRoute));
 
 /**
- * This route validates request param for correct mongoId structure
- * and deletes it from the database. Returns deleted book document in JSON format.
- * If fails, throws ValidateError.
+ * @swagger
+ * /api/books/{bookId}:
+ *  delete:
+ *   summary: This route deletes book by the specified book ID
+ *   tags: [Books]
+ *   parameters:
+ *    - in: path
+ *      type: string
+ *      required: true
+ *      description: ID of the book
+ *   responses:
+ *    200:
+ *     description: Successfully updated book
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         state:
+ *          type: string
+ *          description: Status of the API operation
+ *         result:
+ *          type: object
+ *          description: Result of the API operation
+ *          $ref: "#/components/schemas/Book"
+ *    400:
+ *     description: Bad Request
+ *    404:
+ *     description: Not Found
+ *    500:
+ *     description: Internal Server Error
  */
 router.delete('/books/:bookId',
     validateContentType('none'),
