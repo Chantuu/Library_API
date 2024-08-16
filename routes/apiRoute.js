@@ -199,10 +199,61 @@ router.get('/books/:bookId',
     catchAsyncError(displayBookByIdRoute));
 
 /**
- * This route validates request body for having any of 4 fields with correct types and
- * request param for correct mongoId structure, finds corresponding book document
- * and updates it with relevant information. Returns updated book in JSON format.
- * If fails, throws ValidateError.
+ * @swagger
+ * /api/books/{bookId}:
+ *  patch:
+ *   summary: This route updates one book by specified book ID
+ *   tags: [Books]
+ *   parameters:
+ *    - in: path
+ *      name: bookId
+ *      schema:
+ *       type: string
+ *       required: true
+ *       description: ID of the book
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       type: object
+ *       properties:
+ *        name:
+ *         type: string
+ *         description: Name of the book
+ *        author:
+ *         type: string
+ *         description: Author of the book
+ *        genre:
+ *         type: string
+ *         description: Genre of the book
+ *        publishYear:
+ *         type: integer
+ *         description: Year, when the book was published
+ *        description:
+ *         type: string
+ *         description: Description of the book
+ *   responses:
+ *    200:
+ *     description: Successfully updated book
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         state:
+ *          type: string
+ *          description: Status of the API operation
+ *         result:
+ *          type: object
+ *          description: Result of the API operation
+ *          $ref: "#/components/schemas/Book"
+ *    400:
+ *     description: Bad Request
+ *    404:
+ *     description: Not Found
+ *    500:
+ *     description: Internal Server Error
  */
 router.patch('/books/:bookId',
     validateContentType('application/json'),
