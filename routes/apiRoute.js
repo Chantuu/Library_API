@@ -51,6 +51,7 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *     name: Twenty Thousand Leagues Under the Seas
  *     author: Jules Verne
  *     genre: Adventure
+ *     publishYear: 1872
  *     description: Twenty Thousand Leagues Under the Seas is a science fiction adventure novel by the French writer Jules Verne.
  */
 
@@ -69,10 +70,6 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *  get:
  *   summary: This route returns the list of all available books.
  *   tags: [Books]
- *   requestBody:
- *    required: false
- *    content:
- *     none:
  *   responses:
  *    200:
  *     description: Successfully returned list containing all books
@@ -92,9 +89,50 @@ router.get('/books',
     catchAsyncError(getBooksRoute));
 
 /**
- * This route validates request body for having 4 exact fields
- * required for new book document creation. Returns newly created
- * book document in JSON format. If fails, throws ValidateError.
+ * @swagger
+ * /api/books:
+ *  post:
+ *   summary: This route creates new book in the program.
+ *   tags: [Books]
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       type: object
+ *       required:
+ *        - name
+ *        - author
+ *        - genre
+ *        - publishYear
+ *       properties:
+ *        name:
+ *         type: string
+ *         description: Title of the book
+ *        author:
+ *         type: string
+ *         description: Author of the book
+ *        genre:
+ *         type: string
+ *         description: Genre of the book
+ *        publishYear:
+ *         type: integer
+ *         description: Year, when the book was published
+ *        description:
+ *         type: string
+ *         description: Description of the book
+ *   responses:
+ *    200:
+ *     description: Successfully created new book
+ *     content:
+ *      application/json:
+ *       type: object
+ *       schema:
+ *        $ref: "#/components/schemas/Book"
+ *    400:
+ *     description: Bad Request
+ *    500:
+ *     description: Internal Server Error
  */
 router.post('/books',
     validateContentType('application/json'),
