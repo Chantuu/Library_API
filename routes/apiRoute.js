@@ -275,9 +275,11 @@ router.patch('/books/:bookId',
  *   tags: [Books]
  *   parameters:
  *    - in: path
- *      type: string
- *      required: true
- *      description: ID of the book
+ *      name: bookId
+ *      schema:
+ *       type: string
+ *       description: ID of the book
+ *       required: true
  *   responses:
  *    200:
  *     description: Successfully updated book
