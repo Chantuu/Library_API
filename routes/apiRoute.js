@@ -76,9 +76,16 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *     content:
  *      application/json:
  *       schema:
- *        type: array
- *        items:
- *         $ref: "#/components/schemas/Book"
+ *        type: object
+ *        properties:
+ *         state:
+ *          type: string
+ *          description: Status of the API operation
+ *         result:
+ *          type: array
+ *          description: Result of the API operation
+ *          items:
+ *           $ref: "#/components/schemas/Book"
  *    400:
  *     description: Bad Request
  *    500:
@@ -126,9 +133,16 @@ router.get('/books',
  *     description: Successfully created new book
  *     content:
  *      application/json:
- *       type: object
  *       schema:
- *        $ref: "#/components/schemas/Book"
+ *        type: object
+ *        properties:
+ *         state:
+ *          type: string
+ *          description: Status of the API operation
+ *         result:
+ *          type: object
+ *          description: Result of the API operation
+ *          $ref: "#/components/schemas/Book"
  *    400:
  *     description: Bad Request
  *    500:
