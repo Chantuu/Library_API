@@ -7,3 +7,5 @@ module.exports.validationContentTypeErrorMessage
 
 module.exports.incorrectAddressErrorMessage
     = 'Incorrect address. Please ensure, that you are using correct method on correct path';
+
+module.exports.userAlreadyExistsErrorMessage = "This user already exists";
