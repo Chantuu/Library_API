@@ -24,6 +24,17 @@ function createBookJsonResponse(book) {
 }
 
 /**
+ * This method creates new successful JSON representative JavaScript object
+ * containing a message in a result field
+ *
+ * @param {String} message
+ * @returns {{result: string, state: Object}}
+ */
+function createSuccessMessageResponse(message) {
+    return createBaseJsonResponse('success', message);
+}
+
+/**
  * This method creates new error JSON representative Javascript object
  * containing an error
  *
@@ -37,4 +48,5 @@ function createErrorResponse(err) {
 }
 
 module.exports.createBookJsonResponse = createBookJsonResponse;
+module.exports.createSuccessMessageResponse = createSuccessMessageResponse;
 module.exports.createErrorResponse = createErrorResponse;
