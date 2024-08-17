@@ -4,6 +4,7 @@ const path = require('path');
 const methodOverride = require('method-override');
 const app = express();
 const apiRoute = require('./routes/apiRoute');
+const userRoute = require('./routes/userRoute');
 const {handleIncorrectRoutes, handleAppErrors} = require('./controllers/appController');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -22,6 +23,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(specs)); // Display Swagger UI
 
 
 app.use('/api', apiRoute); // Uses defined routes in apiRoute.js
+app.use('/users', userRoute);  // Uses defined routes in userRoute.js
 
 
 app.all('*', handleIncorrectRoutes); // Handles undefined routes
