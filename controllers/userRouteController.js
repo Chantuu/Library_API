@@ -2,6 +2,7 @@ const {validationResult} = require("express-validator");
 const UserRepository = require("../repositories/userRepository");
 const {ValidationError} = require("../utilities/errors");
 const {validationJsonErrorMessage} = require("../utilities/errorMessages");
+const {createSuccessMessageResponse} = require('../utilities/jsonResponseCreator')
 
 
 /**
@@ -24,7 +25,7 @@ async function registerNewUser(req, res) {
 
         await UserRepository.disconnectFromDb();
 
-        res.json(newUser);
+        res.json(createSuccessMessageResponse(`User ${username} successfully registered`));
     }
     else {
         throw new ValidationError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
