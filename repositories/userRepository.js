@@ -1,0 +1,66 @@
+const mongoose = require('mongoose');
+const User = require('../models/User');
+const {v4: uuidv4} = require("uuid");
+const {hashPassword} = require("../utilities/helperFunctions");
+
+class UserRepository {
+    /**
+     * This private method is used by other methods for
+     * connecting to the database.
+     *
+     * @returns {Promise<Mongoose>} Promise
+     */
+    static #connectToDb() {
+        return mongoose.connect(process.env.DATABASE_URI, {serverSelectionTimeoutMS: 10000});
+    }
+
+    /**
+     * This method closes connection to the database.
+     *
+     * @returns {Promise<void>} Promise
+     */
+    static disconnectFromDb() {
+        return mongoose.connection.close();
+    }
+
+    /**
+     *  This method returns the user by specified username parameter.
+     *
+     * @param {String} username Username of the user
+     * @returns {Query<User>}
+     */
+    static async getUserByUsername(username) {
+        await this.#connectToDb();
+
+        return User.findOne({username: username});
+    }
+
+    /**
+     * This method creates new user from supplied parameters, but before saving to the database,
+     * API key is automatically generated and password is hashed before saving to the MongoDB.
+     *
+     * @param {String} username Username of the user
+     * @param {String} password Password of the user
+     * @param {String} firstName First name of the user
+     * @param {String} lastName Last name of the user
+     * @returns {Query<User>} Returns query containing newly created User
+     */
+    static async createUser(username, password, firstName, lastName) {
+        await this.#connectToDb();
+
+        const hashedPassword = await hashPassword(password);
+        const apiKey = uuidv4();
+
+        const newUser = new User({
+            username: username,
+            hash: hashedPassword,
+            firstName: firstName,
+            lastName: lastName,
+            apiKey: apiKey
+        });
+        await newUser.save();
+        return newUser;
+    }
+}
+
+module.exports = UserRepository;
