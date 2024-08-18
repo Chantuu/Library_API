@@ -9,35 +9,19 @@ const {comparePassword} = require("../utilities/helperFunctions");
 
 /**
  * This route function is responsible for authenticating user and
- * returning user object in JSON response.
- * If any prior validations fail, this function throws ValidationError.
- * If authorization process fails, this function throws UnauthorizedError.
+ * returning user object in JSON response. This function does not have any built-in
+ * validations because all validations are handled in middlewares before this function
  *
- * @param {import('express').request} req
- * @param {import('express').response} res
- * @throws {ValidationError, UnauthorizedError}
+ * @param {import('express').request} req Request Object
+ * @param {import('express').response} res Response Object
  */
 async function returnUserData(req, res) {
-    const validationRes = validationResult(req);
+    const {username} = req.body;
 
-    if (validationRes.isEmpty()) {
-        const {username, password} = req.body;
+    const user = await UserRepository.getUserByUsername(username);
+    await userRepository.disconnectFromDb();
 
-        const user = await UserRepository.getUserByUsername(username);
-        await userRepository.disconnectFromDb();
-
-        // Checks if user object is not empty and password from request body is similar to hashed password from found
-        // user.
-        if (user && await comparePassword(password, user.hash)) {
-            res.json(createUserJsonResponse(user));
-        }
-        else {
-            throw new UnauthorizedError(incorrectUserAndPasswordErrorMessage);
-        }
-    }
-    else {
-        throw new ValidationError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
-    }
+    res.json(createUserJsonResponse(user));
 }
 
 /**

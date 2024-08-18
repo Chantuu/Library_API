@@ -1,11 +1,13 @@
 const bookRepository = require("../repositories/bookRepository");
-const {ValidationError, NotFoundError, AlreadyExistsError} = require("./errors");
+const {ValidationError, NotFoundError, AlreadyExistsError, UnauthorizedError} = require("./errors");
 const {validationContentTypeErrorMessage, validationIdErrorMessage, validationIdFormatErrorMessage,
-    validationJsonErrorMessage, userAlreadyExistsErrorMessage
+    validationJsonErrorMessage, userAlreadyExistsErrorMessage, incorrectUserAndPasswordErrorMessage
 } = require("./errorMessages")
 const mongoose = require("mongoose");
 const UserRepository = require("../repositories/userRepository");
 const {validationResult} = require("express-validator");
+const userRepository = require("../repositories/bookRepository");
+const {comparePassword} = require("./helperFunctions");
 
 
 /**
@@ -100,7 +102,42 @@ async function validateUserNotExists(req, res, next) {
     }
 }
 
+/**
+ * This validator is responsible for user validation. It takes username and password fields
+ * from request body, searches for a user and checks plaint text password with hashed passwords.
+ * If user is found and passwords match, authentication is successful.
+ * If user is not found or passwords do not match, function throws UnauthorizedError.
+ *
+ * @param {import('express').request} req Request Object
+ * @param {import('express').response} res Response Object
+ * @param {Function} next Next middleware function
+ * @throws {UnauthorizedError}
+ */
+async function authenticateUser(req, res, next) {
+    const validationRes = validationResult(req);
+
+    if (validationRes.isEmpty()) {
+        const {username, password} = req.body;
+
+        const user = await UserRepository.getUserByUsername(username);
+        await userRepository.disconnectFromDb();
+
+        // Checks if user object is not empty and password from request body is similar to hashed password from found
+        // user.
+        if (user && await comparePassword(password, user.hash)) {
+            next();
+        }
+        else {
+            throw new UnauthorizedError(incorrectUserAndPasswordErrorMessage);
+        }
+    }
+    else {
+        throw new ValidationError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
+    }
+}
+
 
 module.exports.validateBookExists = validateBookId;
 module.exports.validateContentType = validateContentType;
 module.exports.validateUserNotExists = validateUserNotExists;
+module.exports.authenticateUser = authenticateUser;

@@ -4,7 +4,7 @@ const router = express.Router();
 const catchAsyncError = require("../utilities/catchAsyncError");
 const {ValidationError, AlreadyExistsError, NotFoundError, UnauthorizedError} = require("../utilities/errors");
 const {validationJsonErrorMessage, validationIdErrorMessage, incorrectUserAndPasswordErrorMessage} = require("../utilities/errorMessages");
-const {validateContentType, validateUserNotExists} = require("../utilities/customValidators");
+const {validateContentType, validateUserNotExists, authenticateUser} = require("../utilities/customValidators");
 const UserRepository = require("../repositories/userRepository");
 const {registerNewUser, returnUserData} = require("../controllers/userRouteController");
 const userRepository = require("../repositories/bookRepository");
@@ -17,6 +17,7 @@ router.get("/",
         body("username").notEmpty().isString(),
         body("password").notEmpty().isString(),
     ]),
+    catchAsyncError(authenticateUser),
     catchAsyncError(returnUserData));
 
 router.post('/',
