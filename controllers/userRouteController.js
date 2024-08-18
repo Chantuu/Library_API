@@ -2,7 +2,7 @@ const {validationResult} = require("express-validator");
 const UserRepository = require("../repositories/userRepository");
 const {ValidationError, UnauthorizedError} = require("../utilities/errors");
 const {validationJsonErrorMessage, incorrectUserAndPasswordErrorMessage} = require("../utilities/errorMessages");
-const {createSuccessMessageResponse} = require('../utilities/jsonResponseCreator')
+const {createSuccessMessageResponse, createUserJsonResponse} = require('../utilities/jsonResponseCreator')
 const userRepository = require("../repositories/bookRepository");
 const {comparePassword} = require("../utilities/helperFunctions");
 
@@ -29,7 +29,7 @@ async function returnUserData(req, res) {
         // Checks if user object is not empty and password from request body is similar to hashed password from found
         // user.
         if (user && await comparePassword(password, user.hash)) {
-            res.json({user});
+            res.json(createUserJsonResponse(user));
         }
         else {
             throw new UnauthorizedError(incorrectUserAndPasswordErrorMessage);
