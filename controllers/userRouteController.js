@@ -1,10 +1,9 @@
 const {validationResult} = require("express-validator");
 const UserRepository = require("../repositories/userRepository");
-const {ValidationError, UnauthorizedError} = require("../utilities/errors");
-const {validationJsonErrorMessage, incorrectUserAndPasswordErrorMessage} = require("../utilities/errorMessages");
+const {ValidationError} = require("../utilities/errors");
+const {validationJsonErrorMessage} = require("../utilities/errorMessages");
 const {createSuccessMessageResponse, createUserJsonResponse} = require('../utilities/jsonResponseCreator')
 const userRepository = require("../repositories/bookRepository");
-const {comparePassword} = require("../utilities/helperFunctions");
 
 
 /**

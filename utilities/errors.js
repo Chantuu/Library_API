@@ -84,4 +84,4 @@ module.exports.BaseError = BaseError;
 module.exports.ValidationError = ValidationError;
 module.exports.NotFoundError = NotFoundError;
 module.exports.AlreadyExistsError = AlreadyExistsError;
-module.exports.UnauthorizedError = UnauthorizedError;
+module.exports.UnauthenticatedError = UnauthorizedError;

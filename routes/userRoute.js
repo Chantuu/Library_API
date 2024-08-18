@@ -1,14 +1,9 @@
 const express = require('express');
-const {checkExact, body, validationResult, matchedData} = require("express-validator");
+const {checkExact, body} = require("express-validator");
 const router = express.Router();
 const catchAsyncError = require("../utilities/catchAsyncError");
-const {ValidationError, AlreadyExistsError, NotFoundError, UnauthorizedError} = require("../utilities/errors");
-const {validationJsonErrorMessage, validationIdErrorMessage, incorrectUserAndPasswordErrorMessage} = require("../utilities/errorMessages");
 const {validateContentType, validateUserNotExists, authenticateUser} = require("../utilities/customValidators");
-const UserRepository = require("../repositories/userRepository");
 const {registerNewUser, returnUserData} = require("../controllers/userRouteController");
-const userRepository = require("../repositories/bookRepository");
-const {comparePassword} = require("../utilities/helperFunctions");
 
 
 router.get("/",

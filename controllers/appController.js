@@ -1,5 +1,5 @@
 const {createErrorResponse, createErrorMessageResponse} = require("../utilities/jsonResponseCreator");
-const {ValidationError, NotFoundError, BaseError, UnauthorizedError} = require("../utilities/errors");
+const {ValidationError, NotFoundError, BaseError, UnauthenticatedError} = require("../utilities/errors");
 const {Error: mongooseError} = require('mongoose');
 const {incorrectAddressErrorMessage, validationJsonErrorMessage} = require('../utilities/errorMessages');
 
@@ -35,7 +35,7 @@ function handleAppErrors(err, req, res, next) {
     else if (err instanceof NotFoundError) {
         res.status(404);
     }
-    else if (err instanceof UnauthorizedError) {
+    else if (err instanceof UnauthenticatedError) {
         res.status(401);
     }
     else {

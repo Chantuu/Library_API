@@ -1,5 +1,5 @@
 const bookRepository = require("../repositories/bookRepository");
-const {ValidationError, NotFoundError, AlreadyExistsError, UnauthorizedError} = require("./errors");
+const {ValidationError, NotFoundError, AlreadyExistsError, UnauthenticatedError} = require("./errors");
 const {validationContentTypeErrorMessage, validationIdErrorMessage, validationIdFormatErrorMessage,
     validationJsonErrorMessage, userAlreadyExistsErrorMessage, incorrectUserAndPasswordErrorMessage
 } = require("./errorMessages")
@@ -111,7 +111,7 @@ async function validateUserNotExists(req, res, next) {
  * @param {import('express').request} req Request Object
  * @param {import('express').response} res Response Object
  * @param {Function} next Next middleware function
- * @throws {UnauthorizedError}
+ * @throws {UnauthenticatedError}
  */
 async function authenticateUser(req, res, next) {
     const validationRes = validationResult(req);
@@ -128,7 +128,7 @@ async function authenticateUser(req, res, next) {
             next();
         }
         else {
-            throw new UnauthorizedError(incorrectUserAndPasswordErrorMessage);
+            throw new UnauthenticatedError(incorrectUserAndPasswordErrorMessage);
         }
     }
     else {
