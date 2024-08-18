@@ -47,6 +47,23 @@ class NotFoundError extends BaseError {
     }
 }
 
+/**
+ * This error class is used for
+ * representing errors, telling that
+ * item already exists.
+ */
+class AlreadyExistsError {
+    /**
+     * Class constructor
+     *
+     * @param {String} message Error message
+     */
+    constructor(message) {
+        this.message = message;
+    }
+}
+
 module.exports.BaseError = BaseError;
 module.exports.ValidationError = ValidationError;
 module.exports.NotFoundError = NotFoundError;
+module.exports.AlreadyExistsError = AlreadyExistsError;
