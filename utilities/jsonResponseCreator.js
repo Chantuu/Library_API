@@ -24,6 +24,24 @@ function createBookJsonResponse(book) {
 }
 
 /**
+ * This method creates new successful JSON representative Javascript object
+ * containing formatted User document in result field.
+ *
+ * @param {import('../models/User')} user User document
+ * @returns {{state: string, result: import('../models/User')}}
+ */
+function createUserJsonResponse(user) {
+    const formattedUser = {
+        username: user.username,
+        apiKey: user.apiKey,
+        firstName: user.firstName,
+        lastName: user.lastName
+    };
+
+    return createBaseJsonResponse('success', formattedUser);
+}
+
+/**
  * This method creates new successful JSON representative JavaScript object
  * containing a message in a result field
  *
@@ -60,6 +78,7 @@ function createErrorMessageResponse(errMessage) {
 
 
 module.exports.createBookJsonResponse = createBookJsonResponse;
+module.exports.createUserJsonResponse = createUserJsonResponse;
 module.exports.createSuccessMessageResponse = createSuccessMessageResponse;
 module.exports.createErrorResponse = createErrorResponse;
 module.exports.createErrorMessageResponse = createErrorMessageResponse;
