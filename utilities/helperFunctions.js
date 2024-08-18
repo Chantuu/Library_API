@@ -12,4 +12,17 @@ async function hashPassword(password) {
     return bcrypt.hash(password, salt);
 }
 
+/**
+ * This function compares plain text password to hashed password
+ * and checks if they are the same. Returns true or false.
+ *
+ * @param {string} plainPassword Plain text password
+ * @param {string} hashedPassword Hashed password
+ * @returns {Promise<boolean>} Returns promise with boolean
+ */
+async function comparePassword(plainPassword, hashedPassword) {
+    return bcrypt.compare(plainPassword, hashedPassword);
+}
+
 module.exports.hashPassword = hashPassword;
+module.exports.comparePassword = comparePassword;
