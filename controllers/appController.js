@@ -1,5 +1,5 @@
-const {createErrorResponse} = require("../utilities/jsonResponseCreator");
-const {ValidationError, NotFoundError} = require("../utilities/errors");
+const {createErrorResponse, createErrorMessageResponse} = require("../utilities/jsonResponseCreator");
+const {ValidationError, NotFoundError, BaseError} = require("../utilities/errors");
 const {Error: mongooseError} = require('mongoose');
 const {incorrectAddressErrorMessage, validationJsonErrorMessage} = require('../utilities/errorMessages');
 
@@ -47,7 +47,16 @@ function handleAppErrors(err, req, res, next) {
         err = new ValidationError(validationJsonErrorMessage);
     }
 
-    res.json(createErrorResponse(err));
+    /* This conditional checks if incoming error is instance of the BaseError class.
+    * If it is, this error is outputted as an object in result field.
+    * If it is not, this error is outputted as a message in result field.
+     */
+    if (!(err instanceof BaseError)) {
+        res.json(createErrorMessageResponse(err.message));
+    }
+    else {
+        res.json(createErrorResponse(err));
+    }
 }
 
 module.exports.handleIncorrectRoutes = handleIncorrectRoutes;

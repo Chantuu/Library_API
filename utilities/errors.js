@@ -1,9 +1,25 @@
 /**
+ * This error class is base class,
+ * used for grouping base functionality
+ * in one place
+ */
+class BaseError {
+    /**
+     * Class constructor
+     *
+     * @param {String} message Error message
+     */
+    constructor(message) {
+        this.message = message;
+    }
+}
+
+/**
  * This error class is used for
  * representing any validation errors
  * coming from express-validator.
  */
-class ValidationError {
+class ValidationError extends BaseError {
     /**
      * Class constructor
      *
@@ -11,7 +27,7 @@ class ValidationError {
      * @param {Array} innerValidationErrors Array of any additional errors (optional)
      */
     constructor(message, innerValidationErrors = []) {
-        this.message = message;
+        super(message);
         this.innerValidationErrors = innerValidationErrors;
     }
 }
@@ -20,33 +36,17 @@ class ValidationError {
  * This error class is used for
  * representing any 404/Not found errors.
  */
-class NotFoundError {
+class NotFoundError extends BaseError {
     /**
      * Class constructor
      *
      * @param {String} message Error message
      */
     constructor(message) {
-        this.message = message;
+        super(message);
     }
 }
 
-/**
- * This error class is used for
- * representing errors, telling that
- * item already exists.
- */
-class AlreadyExistsError {
-    /**
-     * Class constructor
-     *
-     * @param {String} message Error message
-     */
-    constructor(message) {
-        this.message = message;
-    }
-}
-
+module.exports.BaseError = BaseError;
 module.exports.ValidationError = ValidationError;
 module.exports.NotFoundError = NotFoundError;
-module.exports.AlreadyExistsError = AlreadyExistsError;
