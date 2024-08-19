@@ -28,6 +28,7 @@ router.post('/',
     catchAsyncError(registerNewUser));
 
 router.patch('/',
+    validateContentType('application/json'),
     checkExact([
         body("username").notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage),
         body("password").notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage),
