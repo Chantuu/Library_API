@@ -68,7 +68,7 @@ class UserRepository {
      *
      * @param {string} username User username
      * @param {{firstName: String, lastName: String, password: String}} updateData New data for specified user document
-     * @returns {Promise<Query<exports>>}
+     * @returns {Promise<User>}
      */
     static async updateUser(username, updateData) {
         const updatedUser = await this.getUserByUsername(username);
@@ -84,6 +84,20 @@ class UserRepository {
 
         await updatedUser.save();
         return updatedUser;
+    }
+
+    /**
+     * This method gets user matching to the specified username
+     * and deletes it from the MongoDB. As a result is returned object
+     * containing details about operation.
+     *
+     * @param {String} username User username
+     * @returns {Promise<{acknowleged: Boolean, deletedCount: Number}>}
+     */
+    static async deleteUser(username) {
+        await this.#connectToDb();
+
+        return User.deleteOne({ username: username });
     }
 }
 
