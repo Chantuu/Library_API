@@ -136,8 +136,21 @@ async function authenticateUser(req, res, next) {
     }
 }
 
+/**
+ * This validator validates that there is not any whitespace present between characters
+ * in a field value. This validator is mostly used inside express-validator .custom() method.
+ * This method returns true, if there is not any whitespace, otherwise it returns false.
+ *
+ * @param {String} fieldValue String value of the express-validator supplied field
+ * @returns {boolean}
+ */
+function noWhitespacesBetween(fieldValue) {
+    return !fieldValue.includes(" ");
+}
+
 
 module.exports.validateBookExists = validateBookId;
 module.exports.validateContentType = validateContentType;
 module.exports.validateUserNotExists = validateUserNotExists;
 module.exports.authenticateUser = authenticateUser;
+module.exports.noWhitespacesBetween = noWhitespacesBetween;
