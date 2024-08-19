@@ -55,6 +55,8 @@ async function updateUserData(req, res) {
     const {update: updateData, username} = req.body;
 
     const updatedUser = await UserRepository.updateUser(username, updateData);
+    await UserRepository.disconnectFromDb();
+
     res.json(createUserJsonResponse(updatedUser));
 }
 
