@@ -97,6 +97,56 @@ router.post("/credentials",
     catchAsyncError(authenticateUser),
     catchAsyncError(returnUserData));
 
+/**
+ * @swagger
+ * /users:
+ *  post:
+ *   summary: This route is used for new user registration
+ *   tags: [Users]
+ *   requestBody:
+ *    required: true
+ *    description: This body must contain firstName, lastName, username and password fields, where values of username and password must not contain any whitespace.
+ *    content:
+ *     application/json:
+ *      schema:
+ *       type: object
+ *       required:
+ *        - username
+ *        - password
+ *        - firstName
+ *        - lastName
+ *       properties:
+ *        username:
+ *         type: string
+ *         description: Unique username of the user
+ *        password:
+ *         type: string
+ *         description: Password of the user
+ *        firstName:
+ *         type: string
+ *         description: First name of the user
+ *        lastName:
+ *         type: string
+ *         description: Last name of the user
+ *   responses:
+ *    200:
+ *     description: User successfully registered
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         state:
+ *          type: string
+ *          description: Status of the API operation
+ *         result:
+ *          type: string
+ *          description: Result of the API operation
+ *    400:
+ *     description: Bad Request
+ *    500:
+ *     description: Internal Server Error
+ */
 router.post('/',
     validateContentType('application/json'),
     checkExact([
