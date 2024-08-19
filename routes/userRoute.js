@@ -158,6 +158,64 @@ router.post('/',
     catchAsyncError(validateUserNotExists),
     catchAsyncError(registerNewUser));
 
+/**
+ * @swagger
+ * /users:
+ *  patch:
+ *   summary: This route is used for updating user credentials
+ *   tags: [Users]
+ *   requestBody:
+ *    required: true
+ *    description: This body must contain username and password fields, where values of the both fields must not contain any whitespace. Update field must contain one of optional fields described in schema.
+ *    content:
+ *     application/json:
+ *      schema:
+ *       type: object
+ *       required:
+ *        - username
+ *        - password
+ *        - update
+ *       properties:
+ *        username:
+ *         type: string
+ *         description: Unique username of the user
+ *        password:
+ *         type: string
+ *         description: Password of the user
+ *        update:
+ *         type: object
+ *         properties:
+ *          password:
+ *           type: string
+ *           description: Password of the user
+ *          firstName:
+ *           type: string
+ *           description: First name of the user
+ *          lastName:
+ *           type: string
+ *           description: Last name of the user
+ *   responses:
+ *    200:
+ *     description: User successfully updated
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         state:
+ *          type: string
+ *          description: Status of the API operation
+ *         result:
+ *          type: object
+ *          description: Result of the API operation
+ *          $ref: "#/components/schemas/User"
+ *    400:
+ *     description: Bad Request
+ *    401:
+ *     description: Unauthorized
+ *    500:
+ *     description: Internal Server Error
+ */
 router.patch('/',
     validateContentType('application/json'),
     checkExact([
