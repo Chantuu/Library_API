@@ -18,11 +18,6 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *  schemas:
  *   Book:
  *    type: object
- *    required:
- *     - name
- *     - author
- *     - genre
- *     - publishYear
  *    properties:
  *     _id:
  *      type: string
