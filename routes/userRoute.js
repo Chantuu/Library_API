@@ -3,7 +3,7 @@ const {checkExact, body} = require("express-validator");
 const router = express.Router();
 const catchAsyncError = require("../utilities/catchAsyncError");
 const {validateContentType, validateUserNotExists, authenticateUser, noWhitespacesBetween, isObjectEmpty} = require("../utilities/customValidators");
-const {registerNewUser, returnUserData, updateUserData} = require("../controllers/userRouteController");
+const {registerNewUser, returnUserData, updateUserData, deleteUser} = require("../controllers/userRouteController");
 const {noSpaceBetweenErrorMessage, noEmptyPayloadErrorMessage} = require("../utilities/errorMessages");
 
 
@@ -39,5 +39,14 @@ router.patch('/',
     ]),
     catchAsyncError(authenticateUser),
     catchAsyncError(updateUserData));
+
+router.delete('/',
+    validateContentType('application/json'),
+    checkExact([
+        body("username").notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage),
+        body("password").notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage)
+    ]),
+    catchAsyncError(authenticateUser),
+    catchAsyncError(deleteUser));
 
 module.exports = router;
