@@ -7,6 +7,32 @@ const {registerNewUser, returnUserData, updateUserData, deleteUser} = require(".
 const {noSpaceBetweenErrorMessage, noEmptyPayloadErrorMessage} = require("../utilities/errorMessages");
 
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *   User:
+ *    type: object
+ *    properties:
+ *     username:
+ *      type: string
+ *      description: Unique username of the user
+ *     apiKey:
+ *      type: string
+ *      description: Unique API key used for authorization in API
+ *     firstName:
+ *      type: string
+ *      description: First name of the user
+ *     lastName:
+ *      type: string
+ *      description: Last name of the user
+ *    example:
+ *     username: apiuser123
+ *     apiKey: eeeeeeee-dddd-cccc-bbbb-aaaaaaaaaaaa
+ *     firstName: Giorgi
+ *     lastName: Chanturia
+ */
+
 router.get("/",
     validateContentType('application/json'),
     checkExact([
