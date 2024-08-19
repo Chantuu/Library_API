@@ -61,6 +61,30 @@ class UserRepository {
         await newUser.save();
         return newUser;
     }
+
+    /**
+     * This method gets existing user by username parameters and updates data with updateData object.
+     * As a result, updated object is saved to MongoDB and returned after that.
+     *
+     * @param {string} username User username
+     * @param {{firstName: String, lastName: String, password: String}} updateData New data for specified user document
+     * @returns {Promise<Query<exports>>}
+     */
+    static async updateUser(username, updateData) {
+        const updatedUser = await this.getUserByUsername(username);
+
+        for (let property in updateData) {
+            if (property === 'password') {
+                updatedUser.hash = await hashPassword(updateData[property]);
+            }
+            else if (property) {
+                updatedUser[property] = updateData[property];
+            }
+        }
+
+        await updatedUser.save();
+        return updatedUser;
+    }
 }
 
 module.exports = UserRepository;
