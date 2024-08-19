@@ -35,19 +35,12 @@ async function returnUserData(req, res) {
  * @throws {ValidationError}
  */
 async function registerNewUser(req, res) {
-    const validationRes = validationResult(req);
+    const { username, password, firstName, lastName } = req.body;
 
-    if (validationRes.isEmpty()) {
-        const { username, password, firstName, lastName } = req.body;
-        const newUser = await UserRepository.createUser(username, password, firstName, lastName);
+    const newUser = await UserRepository.createUser(username, password, firstName, lastName);
+    await UserRepository.disconnectFromDb();
 
-        await UserRepository.disconnectFromDb();
-
-        res.json(createSuccessMessageResponse(`User ${username} successfully registered`));
-    }
-    else {
-        throw new ValidationError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
-    }
+    res.json(createSuccessMessageResponse(`User ${username} successfully registered`));
 }
 
 
