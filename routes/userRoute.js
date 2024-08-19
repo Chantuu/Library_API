@@ -33,6 +33,15 @@ const {noSpaceBetweenErrorMessage, noEmptyPayloadErrorMessage} = require("../uti
  *     lastName: Chanturia
  */
 
+
+/**
+ * @swagger
+ * tags:
+ *  name: Users
+ *  description: Routes related to the user management
+ */
+
+
 router.get("/",
     validateContentType('application/json'),
     checkExact([
