@@ -2,9 +2,9 @@ const express = require('express');
 const {checkExact, body} = require("express-validator");
 const router = express.Router();
 const catchAsyncError = require("../utilities/catchAsyncError");
-const {validateContentType, validateUserNotExists, authenticateUser, noWhitespacesBetween} = require("../utilities/customValidators");
-const {registerNewUser, returnUserData} = require("../controllers/userRouteController");
-const {noSpaceBetweenErrorMessage} = require("../utilities/errorMessages");
+const {validateContentType, validateUserNotExists, authenticateUser, noWhitespacesBetween, isObjectEmpty} = require("../utilities/customValidators");
+const {registerNewUser, returnUserData, updateUserData} = require("../controllers/userRouteController");
+const {noSpaceBetweenErrorMessage, noEmptyPayloadErrorMessage} = require("../utilities/errorMessages");
 
 
 router.get("/",
@@ -27,5 +27,16 @@ router.post('/',
     catchAsyncError(validateUserNotExists),
     catchAsyncError(registerNewUser));
 
+router.patch('/',
+    checkExact([
+        body("username").notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage),
+        body("password").notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage),
+        body("update").isObject().custom(isObjectEmpty).withMessage(noEmptyPayloadErrorMessage),
+        body("update.firstName").optional().isString().trim(),
+        body("update.lastName").optional().isString().trim(),
+        body("update.password").optional().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage)
+    ]),
+    catchAsyncError(authenticateUser),
+    catchAsyncError(updateUserData));
 
 module.exports = router;
