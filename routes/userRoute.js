@@ -42,7 +42,7 @@ const {noSpaceBetweenErrorMessage, noEmptyPayloadErrorMessage} = require("../uti
  */
 
 
-router.get("/",
+router.post("/credentials",
     validateContentType('application/json'),
     checkExact([
         body("username").notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage),
