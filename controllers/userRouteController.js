@@ -32,17 +32,33 @@ async function returnUserData(req, res) {
  * @param {import('express').request} req Express Request Object
  * @param {import('express').response} res Express Response Object
  * @returns {Promise<void>}
- * @throws {ValidationError}
  */
 async function registerNewUser(req, res) {
     const { username, password, firstName, lastName } = req.body;
 
-    const newUser = await UserRepository.createUser(username, password, firstName, lastName);
+    await UserRepository.createUser(username, password, firstName, lastName);
     await UserRepository.disconnectFromDb();
 
     res.json(createSuccessMessageResponse(`User ${username} successfully registered`));
 }
 
+/**
+ * This route method is responsible for updating an existing user document
+ * with new data from the request body. This function works, if all previous middleware validations are passed.
+ * Username and new data is extracted from request body and applied to the specified User document.
+ *
+ * @param {import('express').request} req Express Request Object
+ * @param {import('express').response} res Express Response Object
+ * @returns {Promise<void>}
+ */
+async function updateUserData(req, res) {
+    const {update: updateData, username} = req.body;
+
+    const updatedUser = await UserRepository.updateUser(username, updateData);
+    res.json(createUserJsonResponse(updatedUser));
+}
+
 
 module.exports.returnUserData = returnUserData;
 module.exports.registerNewUser = registerNewUser;
+module.exports.updateUserData = updateUserData;
