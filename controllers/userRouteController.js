@@ -61,6 +61,27 @@ async function updateUserData(req, res) {
 }
 
 
+/**
+ * This route method is responsible for deleting user with specified username.
+ * This function works, if all previous middleware validations are passed.
+ * Username is extracted from the request body and is used to find specified user
+ * and delete it from MongoDB
+ *
+ * @param {import('express').request} req Express Request Object
+ * @param {import('express').response} res Express Response Object
+ * @returns {Promise<void>}
+ */
+async function deleteUser(req, res) {
+    const {username} = req.body;
+
+    await UserRepository.deleteUser(username);
+    await UserRepository.disconnectFromDb();
+
+    res.json(createSuccessMessageResponse(`User ${username} has been successfully deleted`));
+}
+
+
 module.exports.returnUserData = returnUserData;
 module.exports.registerNewUser = registerNewUser;
 module.exports.updateUserData = updateUserData;
+module.exports.deleteUser = deleteUser;
