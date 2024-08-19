@@ -229,6 +229,50 @@ router.patch('/',
     catchAsyncError(authenticateUser),
     catchAsyncError(updateUserData));
 
+/**
+ * @swagger
+ * /users:
+ *  delete:
+ *   summary: This route is used for deleting user account
+ *   tags: [Users]
+ *   requestBody:
+ *    required: true
+ *    description: This body must contain username and password fields, where values of the both fields must not contain any whitespace.
+ *    content:
+ *     application/json:
+ *      schema:
+ *       type: object
+ *       required:
+ *        - username
+ *        - password
+ *       properties:
+ *        username:
+ *         type: string
+ *         description: Unique username of the user
+ *        password:
+ *         type: string
+ *         description: Password of the user
+ *   responses:
+ *    200:
+ *     description: User successfully registered
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         state:
+ *          type: string
+ *          description: Status of the API operation
+ *         result:
+ *          type: string
+ *          description: Result of the API operation
+ *    400:
+ *     description: Bad Request
+ *    401:
+ *     description: Unauthorized
+ *    500:
+ *     description: Internal Server Error
+ */
 router.delete('/',
     validateContentType('application/json'),
     checkExact([
