@@ -148,9 +148,22 @@ function noWhitespacesBetween(fieldValue) {
     return !fieldValue.includes(" ");
 }
 
+/**
+ * This method is used for checking, if object is empty. If an actual object
+ * is empty, it returns false, otherwise true.
+ *
+ * @param {Object} obj Desired object to be checked
+ * @returns {boolean}
+ */
+function isObjectEmpty(obj) {
+    const result = JSON.stringify(obj);
+    return result !== '{}';
+}
+
 
 module.exports.validateBookExists = validateBookId;
 module.exports.validateContentType = validateContentType;
 module.exports.validateUserNotExists = validateUserNotExists;
 module.exports.authenticateUser = authenticateUser;
 module.exports.noWhitespacesBetween = noWhitespacesBetween;
+module.exports.isObjectEmpty = isObjectEmpty;
