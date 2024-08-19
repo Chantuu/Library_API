@@ -12,3 +12,4 @@ module.exports.userAlreadyExistsErrorMessage = "This user already exists";
 module.exports.incorrectUserAndPasswordErrorMessage = 'Specified user and password combination does not exist.';
 
 module.exports.noSpaceBetweenErrorMessage = "No spaces are allowed between characters";
+module.exports.noEmptyPayloadErrorMessage = "Payload object can not be empty";
