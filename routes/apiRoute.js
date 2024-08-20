@@ -9,7 +9,10 @@ const {
 } = require('../controllers/apiRouteController');
 const catchAsyncError = require('../utilities/catchAsyncError');
 const {checkExact, body} = require("express-validator");
-const {validateContentType, validateBookExists} = require('../utilities/customValidators');
+const {validateContentType, validateBookExists, authenticateUserWithApiKey, noWhitespacesBetween, isObjectEmpty} = require('../utilities/customValidators');
+const {noSpaceBetweenErrorMessage, noEmptyPayloadErrorMessage, fieldMustBeNumberErrorMessage,
+    fieldMustBeStringErrorMessage, fieldMustExistErrorMessage, payloadMustBeObjectErrorMessage
+} = require("../utilities/errorMessages");
 
 
 /**
@@ -19,12 +22,6 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *   Book:
  *    type: object
  *    properties:
- *     _id:
- *      type: string
- *      description: Unique identifier of the book
- *     __v:
- *      type: integer
- *      description: Internal revision of the document in MongoDB
  *     name:
  *      type: string
  *      description: Title of the book
@@ -40,14 +37,16 @@ const {validateContentType, validateBookExists} = require('../utilities/customVa
  *     description:
  *      type: string
  *      description: Description of the book
+ *     creator:
+ *      type: string
+ *      description: User, who uploaded this book to the API.
  *    example:
- *     _id: 66b8d272689cd84f6a762a23
- *     __v: 0
  *     name: Twenty Thousand Leagues Under the Seas
  *     author: Jules Verne
  *     genre: Adventure
  *     publishYear: 1872
  *     description: Twenty Thousand Leagues Under the Seas is a science fiction adventure novel by the French writer Jules Verne.
+ *     creator: someUser
  */
 
 
@@ -103,26 +102,36 @@ router.get('/books',
  *      schema:
  *       type: object
  *       required:
- *        - name
- *        - author
- *        - genre
- *        - publishYear
+ *        - apiKey
+ *        - newBook
  *       properties:
- *        name:
+ *        apiKey:
  *         type: string
- *         description: Title of the book
- *        author:
- *         type: string
- *         description: Author of the book
- *        genre:
- *         type: string
- *         description: Genre of the book
- *        publishYear:
- *         type: integer
- *         description: Year, when the book was published
- *        description:
- *         type: string
- *         description: Description of the book
+ *         description: API key of the user
+ *        newBook:
+ *         type: object
+ *         description: Necessary data for creating new Book
+ *         required:
+ *          - name
+ *          - author
+ *          - genre
+ *          - publishYear
+ *         properties:
+ *          name:
+ *           type: string
+ *           description: Title of the book
+ *          author:
+ *           type: string
+ *           description: Author of the book
+ *          genre:
+ *           type: string
+ *           description: Genre of the book
+ *          publishYear:
+ *           type: integer
+ *           description: Year, when the book was published
+ *          description:
+ *           type: string
+ *           description: Description of the book
  *   responses:
  *    200:
  *     description: Successfully created new book
@@ -146,11 +155,24 @@ router.get('/books',
 router.post('/books',
     validateContentType('application/json'),
     checkExact([
-    body('name').isString().notEmpty(),
-    body('author').isString().notEmpty(),
-    body('genre').isString().notEmpty(),
-    body('publishYear').isNumeric().notEmpty(),
-    body('description').isString().optional()]),
+        body('apiKey').notEmpty().isString().custom(noWhitespacesBetween).withMessage(noSpaceBetweenErrorMessage),
+        body('newBook').isObject().withMessage(payloadMustBeObjectErrorMessage)
+            .custom(isObjectEmpty).withMessage(noEmptyPayloadErrorMessage),
+
+        body('newBook.name').notEmpty().withMessage(fieldMustExistErrorMessage)
+            .isString().withMessage(fieldMustBeStringErrorMessage),
+
+        body('newBook.author').notEmpty().withMessage(fieldMustExistErrorMessage)
+            .isString().withMessage(fieldMustBeStringErrorMessage),
+
+        body('newBook.genre').notEmpty().withMessage(fieldMustExistErrorMessage)
+            .isString().withMessage(fieldMustBeStringErrorMessage),
+
+        body('newBook.publishYear').notEmpty().withMessage(fieldMustExistErrorMessage)
+            .isNumeric().withMessage(fieldMustBeNumberErrorMessage),
+
+        body('newBook.description').isString().optional()]),
+    catchAsyncError(authenticateUserWithApiKey),
     catchAsyncError(createBookRoute));
 
 /**
