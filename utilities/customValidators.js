@@ -1,7 +1,8 @@
 const bookRepository = require("../repositories/bookRepository");
 const {ValidationError, NotFoundError, AlreadyExistsError, UnauthenticatedError} = require("./errors");
 const {validationContentTypeErrorMessage, validationIdErrorMessage, validationIdFormatErrorMessage,
-    validationJsonErrorMessage, userAlreadyExistsErrorMessage, incorrectUserAndPasswordErrorMessage
+    validationJsonErrorMessage, userAlreadyExistsErrorMessage, incorrectUserAndPasswordErrorMessage,
+    incorrectApiKeyErrorMessage
 } = require("./errorMessages")
 const mongoose = require("mongoose");
 const UserRepository = require("../repositories/userRepository");
@@ -107,11 +108,12 @@ async function validateUserNotExists(req, res, next) {
  * from request body, searches for a user and checks plaint text password with hashed passwords.
  * If user is found and passwords match, authentication is successful.
  * If user is not found or passwords do not match, function throws UnauthorizedError.
+ * If Validations fail, function throws ValidationError.
  *
  * @param {import('express').request} req Request Object
  * @param {import('express').response} res Response Object
  * @param {Function} next Next middleware function
- * @throws {UnauthenticatedError}
+ * @throws {ValidationError, UnauthenticatedError}
  */
 async function authenticateUser(req, res, next) {
     const validationRes = validationResult(req);
@@ -129,6 +131,39 @@ async function authenticateUser(req, res, next) {
         }
         else {
             throw new UnauthenticatedError(incorrectUserAndPasswordErrorMessage);
+        }
+    }
+    else {
+        throw new ValidationError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
+    }
+}
+
+/**
+ * This validator is responsible for user authorization using API key. It takes apiKey field
+ * from request body and searches for a matching user.
+ * If user is found, authentication is successful.
+ * If user is not found, function throws UnauthorizedError.
+ * If Validations fail, function throws ValidationError.
+ *
+ * @param {import('express').request} req Request Object
+ * @param {import('express').response} res Response Object
+ * @param {Function} next Next middleware function
+ * @throws {ValidationError, UnauthenticatedError}
+ */
+async function authorizeUserWithApiKey(req, res, next) {
+    const validationRes = validationResult(req);
+
+    if (validationRes.isEmpty()) {
+        const {apiKey} = req.body;
+
+        const user = await UserRepository.getUserByApiKey(apiKey);
+        await userRepository.disconnectFromDb();
+
+        if (user) {
+            next();
+        }
+        else {
+            throw new UnauthenticatedError(incorrectApiKeyErrorMessage);
         }
     }
     else {
@@ -165,5 +200,6 @@ module.exports.validateBookExists = validateBookId;
 module.exports.validateContentType = validateContentType;
 module.exports.validateUserNotExists = validateUserNotExists;
 module.exports.authenticateUser = authenticateUser;
+module.exports.authorizeUserWithApiKey = authorizeUserWithApiKey;
 module.exports.noWhitespacesBetween = noWhitespacesBetween;
 module.exports.isObjectEmpty = isObjectEmpty;
