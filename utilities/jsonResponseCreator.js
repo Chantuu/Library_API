@@ -20,7 +20,19 @@ function createBaseJsonResponse(state, resultObj) {
  * @returns {{state: string, result: import('../models/Book') || [import('../models/Book')]}}
  */
 function createBookJsonResponse(book) {
-    return createBaseJsonResponse('success', book);
+    const formattedBook = {
+        name: book.name,
+        author: book.author,
+        genre: book.genre,
+        publishYear: book.publishYear,
+        creator: book.creator.username
+    }
+
+    if (book.description) {
+        formattedBook.description = book.description;
+    }
+
+    return createBaseJsonResponse('success', formattedBook);
 }
 
 /**
