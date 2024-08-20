@@ -1,8 +1,9 @@
-const bookRepository = require("../repositories/bookRepository");
+const BookRepository = require("../repositories/bookRepository");
 const {validationResult, matchedData} = require("express-validator");
 const {ValidationError} = require("../utilities/errors");
 const {createBookJsonResponse, createErrorResponse} = require('../utilities/jsonResponseCreator');
 const {validationJsonErrorMessage, validationIdErrorMessage} = require("../utilities/errorMessages");
+const UserRepository = require("../repositories/userRepository");
 
 
 /**
@@ -13,8 +14,8 @@ const {validationJsonErrorMessage, validationIdErrorMessage} = require("../utili
  * @param {import('express').response} res Express Response Object
  */
 async function getBooksRoute(req, res) {
-    const books = await bookRepository.getAllBooks();
-    await bookRepository.disconnectFromDb();
+    const books = await BookRepository.getAllBooks();
+    await BookRepository.disconnectFromDb();
 
     const responseJSON = createBookJsonResponse(books);
     res.json(responseJSON);
@@ -30,19 +31,15 @@ async function getBooksRoute(req, res) {
  * @throws {ValidationError}
  */
 async function createBookRoute(req, res) {
-    const validationRes = validationResult(req);
-    if (validationRes.isEmpty()) {
-        const validatedData = matchedData(req);
+    const {apiKey, newBook: bookData} = req.body;
 
-        const newBook = await bookRepository.createBook({...validatedData});
-        await newBook.save();
-        await bookRepository.disconnectFromDb();
+    const user = await UserRepository.getUserByApiKey(apiKey);
+    const newBook = await BookRepository.createBook(bookData, user);
 
-        const responseJSON = createBookJsonResponse(newBook)
-        res.json(responseJSON);
-    } else {
-        throw new ValidationError(validationJsonErrorMessage, validationRes.array({onlyFirstError: true}));
-    }
+    await UserRepository.disconnectFromDb();
+    await BookRepository.disconnectFromDb();
+
+    res.json(createBookJsonResponse(newBook));
 }
 
 /**
@@ -58,8 +55,8 @@ async function displayBookByIdRoute(req, res) {
     const validationRes = validationResult(req);
     if (validationRes.isEmpty()) {
         const {bookId} = req.params;
-        const book = await bookRepository.getBookById(bookId);
-        await bookRepository.disconnectFromDb();
+        const book = await BookRepository.getBookById(bookId);
+        await BookRepository.disconnectFromDb();
 
         const responseJSON = createBookJsonResponse(book);
         res.json(responseJSON);
@@ -84,8 +81,8 @@ async function patchBookRoute(req, res) {
 
     if (validationRes.isEmpty()) {
         const {bookId} = req.params;
-        const updatedBook = await bookRepository.getBookByIdAndUpdate(bookId, {...req.body});
-        await bookRepository.disconnectFromDb();
+        const updatedBook = await BookRepository.getBookByIdAndUpdate(bookId, {...req.body});
+        await BookRepository.disconnectFromDb();
 
         const responseJSON = createBookJsonResponse(updatedBook);
         res.json(responseJSON);
@@ -110,8 +107,8 @@ async function deleteBookRoute(req, res) {
 
     if (validationRes.isEmpty()) {
         const {bookId} = req.params;
-        const deletedBook = await bookRepository.getBookByIdAndDelete(bookId);
-        await bookRepository.disconnectFromDb();
+        const deletedBook = await BookRepository.getBookByIdAndDelete(bookId);
+        await BookRepository.disconnectFromDb();
 
         const responseJSON = createBookJsonResponse(deletedBook);
         res.json(responseJSON);
