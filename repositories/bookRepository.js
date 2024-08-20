@@ -77,7 +77,7 @@ class BookRepository {
      * @param {Object} bookData Object Containing necessary information for creating document
      * @returns {Promise<Book>} Returns a promise with newly created book
      */
-    static async createBook(bookData) {
+    static async createBook(bookData, user) {
         await this.#connectToDb();
 
         const newBook = new Book({
@@ -86,6 +86,7 @@ class BookRepository {
             genre: bookData.genre,
             publishYear: bookData.publishYear,
             description: bookData.description,
+            creator: user
         });
         await newBook.save();
 
