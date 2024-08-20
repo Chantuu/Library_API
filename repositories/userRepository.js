@@ -36,6 +36,18 @@ class UserRepository {
     }
 
     /**
+     *  This method returns the user by specified apiKey parameter.
+     *
+     * @param {String} apiKey API key of the user
+     * @returns {Query<User>}
+     */
+    static async getUserByApiKey(apiKey) {
+        await this.#connectToDb();
+
+        return User.findOne({ apiKey: apiKey });
+    }
+
+    /**
      * This method creates new user from supplied parameters, but before saving to the database,
      * API key is automatically generated and password is hashed before saving to the MongoDB.
      *
