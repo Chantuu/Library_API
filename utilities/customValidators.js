@@ -139,7 +139,7 @@ async function authenticateUser(req, res, next) {
 }
 
 /**
- * This validator is responsible for user authorization using API key. It takes apiKey field
+ * This validator is responsible for user authentication using API key. It takes apiKey field
  * from request body and searches for a matching user.
  * If user is found, authentication is successful.
  * If user is not found, function throws UnauthorizedError.
@@ -150,7 +150,7 @@ async function authenticateUser(req, res, next) {
  * @param {Function} next Next middleware function
  * @throws {ValidationError, UnauthenticatedError}
  */
-async function authorizeUserWithApiKey(req, res, next) {
+async function authenticateUserWithApiKey(req, res, next) {
     const validationRes = validationResult(req);
 
     if (validationRes.isEmpty()) {
@@ -200,6 +200,6 @@ module.exports.validateBookExists = validateBookId;
 module.exports.validateContentType = validateContentType;
 module.exports.validateUserNotExists = validateUserNotExists;
 module.exports.authenticateUser = authenticateUser;
-module.exports.authorizeUserWithApiKey = authorizeUserWithApiKey;
+module.exports.authenticateUserWithApiKey = authenticateUserWithApiKey;
 module.exports.noWhitespacesBetween = noWhitespacesBetween;
 module.exports.isObjectEmpty = isObjectEmpty;
