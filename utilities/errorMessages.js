@@ -6,10 +6,15 @@ module.exports.validationContentTypeErrorMessage
     = 'The specified content type is not supported by that route. Please read docs to choose correct content type.';
 
 module.exports.incorrectAddressErrorMessage
-    = 'Incorrect address. Please ensure, that you are using correct method on correct path';
+    = 'Incorrect address. Please ensure, that you are using correct method on correct path.';
 
-module.exports.userAlreadyExistsErrorMessage = "This user already exists";
+module.exports.userAlreadyExistsErrorMessage = "This user already exists.";
 module.exports.incorrectUserAndPasswordErrorMessage = 'Specified user and password combination does not exist.';
+module.exports.incorrectApiKeyErrorMessage = "Specified API key does not exist.";
 
-module.exports.noSpaceBetweenErrorMessage = "No spaces are allowed between characters";
-module.exports.noEmptyPayloadErrorMessage = "Payload object can not be empty";
+module.exports.noSpaceBetweenErrorMessage = "No spaces are allowed between characters.";
+module.exports.payloadMustBeObjectErrorMessage = "Payload must be of type object."
+module.exports.noEmptyPayloadErrorMessage = "Payload object can not be empty.";
+module.exports.fieldMustExistErrorMessage = "field must be present in payload.";
+module.exports.fieldMustBeStringErrorMessage = "field must be string.";
+module.exports.fieldMustBeNumberErrorMessage = "field must be number.";
