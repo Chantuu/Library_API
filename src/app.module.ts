@@ -11,7 +11,7 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: process.env.DATABASE_NAME_PATH,
-      entities: [],
+      autoLoadEntities: true,
       synchronize: true,
     }),
     UsersModule,
