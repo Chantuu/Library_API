@@ -1,74 +1,96 @@
-# Welcome
+# Simple Library API
 
-Hi! This is simple API web application, which is used as a library management program. The goal of this project is exercise in developing functional applications, which are used to solve real-world problems. Feel free to check out other projects on my [Github profile.](https://github.com/Chantuu?tab=repositories)
+## Description
 
+This repository contains a **RESTful** API, written using Nest.js. It is a simple Library Management Program, which allows users to perform CRUD operations on books and authors. This API also has authentication and admin functionalities written as well. For a database solution, SQLite 3 was chosen along with TypeORM for tight integration with the rest part. The project aims to demonstrate best practices in REST API development, authentication, and database modeling.
 
-# Showcase
+## Features
 
-This was written purely in JavaScript, so there is a list of used NPM Packages
+- Full CRUD Management for the Book resources
+  - Only POST, PATCH and DELETE endpoints require user authentication
+- Full CRUD Management for the Author resources
+  - Only POST, PATCH and DELETE endpoints require user authentication
+- Authentication and Authorization
+- Full Admin Functionality
+- ENV Configuration Support
+- Full Request Body Validation
+- API Documentation Using Swagger UI
 
--   _Express_
--   _Express Validator_
--   _Mongoose_
--  _Swagger UI Express_
--  _Swagger JSDoc_
--  _Method Override_
--  _UUID_
--  _DotEnv_
+## Used Packages And Tools
 
-# Development Setup
-## Prerequisites
-Make sure, Node.js is installed in your machine before you start project setup. For more information [visit this website.](https://nodejs.org/en)
+- **Nest.js**
+- **TypeScript**
+- **TypeORM**
+- **SQLite**
+- **JWT**
+- **class-transformer**
+- **class-validator**
+- **Bcrypt**
+- **Swagger UI**
 
-## Project Setup
+## Project setup
 
-If you want to modify existing project, first you have fork existing repository, which essentially makes a copy of this project in your Github account. After that you can clone forked repository either with  _Bash CLI_  or any  _GUI client_.
-
-**Clone using Bash CLI**
-
-~~~bash
-git clone git@github.com:Your_Name/Guess_A_Word.git
-~~~
-
-Please change  _Your_Name_  text to your actual Github username.
-
-## Installing Necessary Dependencies
-This Node.js application requires some dependencies, which are listed in **package.json**.  To install those dependencies, run the command below in Bash CLI.
-
-**Install Necessary  Dependencies**
-
-~~~bash
-npm install
-~~~
-
-> Additionally, you can install dependencies intended for development purposes using this command.
-
-~~~bash
-npm install --only=dev
-~~~
-
-## Environment Variables
-
-This project primarily depends on three environment variables and it's **absolutely necessary** to have them set up in **.env** file inside **root directory** of the project.
-
-```js
-DATABASE_URI=Your_MongoDB_Connection_String_here
-PORT=Your_Desired_Server_Port_Here
+```bash
+$ npm install
 ```
 
-## Launching Application
-To launch application server, run this command below (Make sure you are in root directory of the project).
+## Compile and run the project
 
- ```bash
-node app.js
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
 ```
 
-> If you installed dev dependencies, you can use Nodemon package to launch the server with automatic restart functionality on every change in the code.
+## Run tests
 
- ```bash
-npx nodemon app.js
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
 ```
 
-# Licensing
+## API Endpoints:
 
-This project does not have any licensing, which means that you can modify and redistribute existing codebase for your own use.
+### Books
+
+- `GET /books` - Get All Books
+- `POST /books` - Add New Book (JWT Auth)
+- `GET /books/:id` - Get Specific Book
+- `PATCH /books/:id` - Update Specific Book Details (JWT Auth)
+- `DELETE /Book/:id` - Delete Specific Book (JWT Auth)
+
+### Authors
+
+- `GET /authors` - Get All Authors
+- `POST /authors` - Add New Author (JWT Auth)
+- `GET /authors/:id` - Get Specific Author
+- `PATCH /authors/:id` - Update Specific Author Details (JWT Auth)
+- `DELETE /authors/:id` - Delete Specific Author (Admin Only) (JWT Auth)
+
+### Authentication
+
+- `POST /auth/register` - User Registration
+- `POST /auth/login` - User Login (JWT Auth)
+
+### Admin
+
+- `GET /admin/users` - List Registered Users (Admin Only) (JWT Auth)
+- `GET /admin/users/:id` - List Registered Specific User (Admin Only) (JWT Auth)
+- `PATCH /admin/users/:id` - Change Specific User Details (Admin Only) (JWT Auth)
+- `PATCH /admin` - Change admin account details (Admin Only) (JWT Auth)
+- `DELETE /admin/users/:id` - Delete Specific User (Admin Only) (JWT Auth)
+
+## License
+
+This project is licensed under **MIT License.**
