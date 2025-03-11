@@ -1,7 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { RegisterUserBodyInterface } from 'src/utilities/interfaces/registerUserBody.interface';
 
 @Injectable()
 export class AuthService {
@@ -9,6 +15,30 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
+
+  /**
+   * This method is responsible for handling user registration. First it checks, If an user with the specified email exists.
+   * If not, user is registered. Otherwise, ConflictException is thrown.
+   *
+   * @param {RegisterUserBodyInterface} registerUserDetails - An object containing all required user dataproperties for registration
+   * @throws {ConflictException} - If user with the specified email already exists
+   * @throws {InternalServerErrorException} - If unexpected error occurs during user save in the database
+   */
+  async registerUser(registerUserDetails: RegisterUserBodyInterface) {
+    const user = await this.usersService.findOneByEmail(
+      registerUserDetails.email,
+    );
+
+    if (!user) {
+      try {
+        await this.usersService.createUser(registerUserDetails);
+      } catch {
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new ConflictException('User with that email already exists');
+    }
+  }
 
   /**
    * This function performs user sign in by generating JWT Token. If the user with the specified mail
