@@ -36,7 +36,9 @@ export class AuthService {
         throw new InternalServerErrorException();
       }
     } else {
-      throw new ConflictException('User with that email already exists');
+      throw new ConflictException(
+        'User with that email already exists. Please choose new email!',
+      );
     }
   }
 
