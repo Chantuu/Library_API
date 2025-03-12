@@ -1,11 +1,23 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    return true;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const user: User = request['user'];
+
+    if (user.role === 'admin') {
+      return true;
+    } else {
+      throw new ForbiddenException(
+        'You are unauthorized to access this endpoint, as it is strictly restricted only to the Admin.',
+      );
+    }
   }
 }
