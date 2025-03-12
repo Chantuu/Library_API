@@ -1,8 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { UsersModule } from './users/users.module';
+import { UsersService } from './users/users.service';
 
 @Module({
   imports: [
@@ -21,6 +23,13 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: { expiresIn: '240s' },
     }),
     AuthModule,
+    UsersModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private usersService: UsersService) {}
+
+  async onModuleInit() {
+    await this.usersService.initializeAdmin();
+  }
+}

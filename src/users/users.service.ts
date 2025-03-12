@@ -12,6 +12,27 @@ export class UsersService {
   ) {}
 
   /**
+   * This method is responsible for generating Admin user automatically at the
+   * application startup. It checks for Admin account existence and if it does
+   * not exist, new Admin account is created using environment variables.
+   * This method must be used once during module initialization and after TypeORM
+   * module initialization.
+   */
+  async initializeAdmin() {
+    const foundResult = await this.usersRepository.findOneBy({ role: 'admin' });
+
+    if (!foundResult) {
+      const adminAccount = this.usersRepository.create({
+        name: process.env.ADMIN_NAME,
+        email: process.env.ADMIN_EMAIL,
+        password: await hashPassword(process.env.ADMIN_PASSWORD ?? '12345678'), // Generates hashed password
+        role: 'admin',
+      });
+      this.usersRepository.save(adminAccount);
+    }
+  }
+
+  /**
    * This method creates and saves new User in the database using the properties defined in RegisterUseBodyInterface.
    * Before creating and saving a user, it's password is immidiately hashed for security reasons.
    *
