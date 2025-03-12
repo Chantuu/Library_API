@@ -1,0 +1,55 @@
+import {
+  BadRequestException,
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
+
+/**
+ * This Guard is responsible for authorizing users in the API for
+ * uploading and managing resources created by that user.
+ */
+@Injectable()
+export class AuthGuard implements CanActivate {
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    try {
+      const request = context.switchToHttp().getRequest();
+      const token = request.get('Authorization') as string;
+
+      // Extract user email from JWT token
+      const payload = await this.jwtService.verifyAsync<{ userEmail: string }>(
+        token,
+        {
+          secret: process.env.JWT_MODULE_SECRET,
+        },
+      );
+
+      try {
+        const foundUser = await this.usersService.findOneByEmail(
+          payload.userEmail,
+        );
+        if (foundUser) {
+          request['user'] = foundUser; // Save user information for route handlers
+          return true;
+        } else {
+          return false;
+        }
+      } catch {
+        // Throws internal server error, if something fails in the TypeORM's end, such as database connection loss
+        throw new InternalServerErrorException();
+      }
+    } catch {
+      throw new BadRequestException(
+        'JWT Token has been expired or is invalid. Please log in again!',
+      );
+    }
+  }
+}
