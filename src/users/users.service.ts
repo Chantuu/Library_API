@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -74,5 +74,16 @@ export class UsersService {
    */
   findOneByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ email: email });
+  }
+
+  /**
+   * This method tries to find one user by the id. It returns a promise with the corresponding user
+   * or null if that specific user was not found.
+   *
+   * @param id - Desired User id
+   * @returns - Promise with desired User or null
+   */
+  findOneById(id: number): Promise<User | null> {
+    return this.usersRepository.findOneBy({ id: id });
   }
 }
