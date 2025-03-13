@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Controller,
   Get,
-  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Query,
@@ -18,7 +17,7 @@ export class AdminController {
   constructor(private usersService: UsersService) {}
 
   /**
-   * This is handler for the /admin/users endpoint. It returns paginated result
+   * This is handler for the GET /admin/users endpoint. It returns paginated result
    * of all registered users in the API system. Users can optionally provide two
    * query parameters to customize paging result. By default, first page is returned
    * with 10 users.

@@ -20,9 +20,8 @@ export class AuthService {
    * This method is responsible for handling user registration. First it checks, If an user with the specified email exists.
    * If not, user is registered. Otherwise, ConflictException is thrown.
    *
-   * @param {RegisterUserBodyInterface} registerUserDetails - An object containing all required user dataproperties for registration
-   * @throws {ConflictException} - If user with the specified email already exists
-   * @throws {InternalServerErrorException} - If unexpected error occurs during user save in the database
+   * @param registerUserDetails - An object containing all required user dataproperties for registration
+   * @throws ConflictException
    */
   async registerUser(registerUserDetails: RegisterUserBodyInterface) {
     const user = await this.usersService.findOneByEmail(
@@ -30,11 +29,7 @@ export class AuthService {
     );
 
     if (!user) {
-      try {
-        await this.usersService.createUser(registerUserDetails);
-      } catch {
-        throw new InternalServerErrorException();
-      }
+      await this.usersService.createUser(registerUserDetails);
     } else {
       throw new ConflictException(
         'User with that email already exists. Please choose new email!',
@@ -47,10 +42,10 @@ export class AuthService {
    * is found and user's password and request body password match, specific JWT Token will be generated
    * for authorization. If user is not found or password don't match, UnauthorizedException will be thrown.
    *
-   * @param {string} email - Email of the desired user
-   * @param {string} password - Password of the desired user
-   * @returns {string} JWT Token for the specified user if exists
-   * @throws {UnauthorizedException} If the specified user was not found
+   * @param email - Email of the desired user
+   * @param password - Password of the desired user
+   * @returns JWT Token for the specified user if exists
+   * @throws If the specified user was not found
    */
   async authenticateUser(email: string, password: string) {
     const user = await this.usersService.findOneByEmail(email);

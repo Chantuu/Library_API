@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -37,7 +37,7 @@ export class UsersService {
    * This method creates and saves new User in the database using the properties defined in RegisterUseBodyInterface.
    * Before creating and saving a user, it's password is immidiately hashed for security reasons.
    *
-   * @param {RegisterUserBodyInterface} userData - Object containing all user parameters in that interface.
+   * @param userData - Object containing all user parameters in that interface.
    */
   async createUser(userData: RegisterUserBodyInterface) {
     const hashedPassword = await hashPassword(userData.password);
@@ -55,7 +55,7 @@ export class UsersService {
    *
    * @param itemsOnPage - (optional) Desired number of items on a page
    * @param page - (optional) Desired page
-   * @returns - A promise containing formatted object consisting from paginated User array, total User count and current page.
+   * @returns A promise containing formatted object consisting from paginated User array, total User count and current page.
    */
   async findPaginated(itemsOnPage?: number, page?: number) {
     return await paginateResponse<User>(
@@ -69,8 +69,8 @@ export class UsersService {
    * This method tries to find one user by the email. It returns a promise with the corresponding user
    * or null if that specific user was not found.
    *
-   * @param {string} email - Desired user's email
-   * @returns {Promise<User | null>}
+   * @param email - Desired user's email
+   * @returns Promise with desired User or null
    */
   findOneByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ email: email });
@@ -81,7 +81,7 @@ export class UsersService {
    * or null if that specific user was not found.
    *
    * @param id - Desired User id
-   * @returns - Promise with desired User or null
+   * @returns Promise with desired User or null
    */
   findOneById(id: number): Promise<User | null> {
     return this.usersRepository.findOneBy({ id: id });
