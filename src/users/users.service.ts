@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserBodyInterface } from 'src/utilities/interfaces/registerUserBody.interface';
 import { hashPassword } from 'src/utilities/functions/hashPassword';
+import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 
 @Injectable()
 export class UsersService {
@@ -48,12 +49,20 @@ export class UsersService {
   }
 
   /**
-   * This method returns a promise containing the array of all registered users in the database.
+   * This method returns a response object with paginated array of the User entities. User can
+   * provide optional arguments for customizing response pages. It uses paginateResponse generic
+   * function underhood.
    *
-   * @returns {Promise<User>[]}
+   * @param itemsOnPage - (optional) Desired number of items on a page
+   * @param page - (optional) Desired page
+   * @returns - A promise containing formatted object consisting from paginated User array, total User count and current page.
    */
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findPaginated(itemsOnPage?: number, page?: number) {
+    return await paginateResponse<User>(
+      this.usersRepository,
+      itemsOnPage,
+      page,
+    );
   }
 
   /**
