@@ -1,6 +1,9 @@
 import {
+  BadRequestException,
   Controller,
   Get,
+  InternalServerErrorException,
+  Param,
   ParseIntPipe,
   Query,
   UseGuards,
@@ -27,5 +30,22 @@ export class AdminController {
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
   ) {
     return this.usersService.findPaginated(itemsOnPage, page);
+  }
+
+  /**
+   * This is a handler for the GET /admin/users endpoint. It returns desired user
+   * information as a response. This handler requires id as an url parameter to
+   * perform search. If id is incorrect, appropriate error response will be sent.
+   */
+  @Get('users/:id')
+  async findOneUser(@Param('id', ParseIntPipe) id: number) {
+    const User = await this.usersService.findOneById(id);
+    if (User) {
+      return { result: User };
+    } else {
+      throw new BadRequestException(
+        'User with the provided id could not be found. Please, provide correct id!',
+      );
+    }
   }
 }
