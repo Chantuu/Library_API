@@ -6,7 +6,7 @@ import {
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { RegisterUserBodyInterface } from 'src/utilities/interfaces/registerUserBody.interface';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,9 +22,9 @@ export class AuthService {
    * @param registerUserDetails - An object containing all required user dataproperties for registration
    * @throws ConflictException
    */
-  async registerUser(registerUserDetails: RegisterUserBodyInterface) {
+  async registerUser(registerUserDetails: Partial<User>) {
     const user = await this.usersService.findOneByEmail(
-      registerUserDetails.email,
+      registerUserDetails.email as string,
     );
 
     if (!user) {
