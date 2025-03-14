@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -65,5 +66,18 @@ export class AdminController {
     @Body(PatchDtoPipe<User>) patchUserBody: PatchUserBodyDTO,
   ) {
     return await this.usersService.updateUser(id, patchUserBody);
+  }
+
+  /**
+   * This is a handler for the DELETE /admin/users/:id endpoint. It deletes desired
+   * user based on the provided id url parameter. If found, an user with that id is
+   * deleted. If id is invalid, an appropriate error response will be sent.
+   */
+  @Delete('users/:id')
+  async deleteUser(@Param('id', ParseIntPipe) id: number) {
+    return {
+      message: 'Successfully deleted requested user',
+      deletedUser: await this.usersService.deleteUser(id),
+    };
   }
 }
