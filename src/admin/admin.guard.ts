@@ -16,7 +16,7 @@ export class AdminGuard implements CanActivate {
       return true;
     } else {
       throw new ForbiddenException(
-        'You are unauthorized to access this endpoint, as it is strictly restricted only to the Admin.',
+        "You are unauthorized to access this endpoint. It's restricted only to the Admins.",
       );
     }
   }
