@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -84,5 +89,97 @@ export class UsersService {
    */
   findOneById(id: number): Promise<User | null> {
     return this.usersRepository.findOneBy({ id: id });
+  }
+
+  /**
+   * This method is responsible for updating user data with new information. It finds user by the
+   * provided id and updates it by assinging values from userData properties to the corresponding
+   * entity properties. Behind the scenes,this method uses private helper methods. It returns updated
+   * user. If user is not found, this method throws BadRequestException.
+   *
+   * @param id - Id for finding desired User
+   * @param userData - All data to update that User
+   * @returns Updated User
+   * @throws BadRequestException
+   */
+  async updateUser(id: number, userData: Partial<User>) {
+    const user = await this.findOneById(id);
+
+    // If user is found
+    if (user) {
+      // If request body has email field
+      if (userData.email) {
+        await this.updateUserEmail(user, userData.email);
+      }
+      // If request body has name field
+      if (userData.name) {
+        this.updateUserName(user, userData.name);
+      }
+      // If request body has password field
+      if (userData.password) {
+        await this.updateUserPassword(user, userData.password);
+      }
+
+      const updatedUser = await this.usersRepository.save(user);
+      return updatedUser;
+    } else {
+      throw new BadRequestException(
+        'User with the provided id could not be found. Please, provide correct id!',
+      );
+    }
+  }
+
+  /**
+   * This helper method is responsible for updating specified user's email. First, it checks, that
+   * no user exists with the provided email. If true, user's email is updated. Otherwise, it throws
+   * ConflictException.
+   *
+   * @param user - Desired User to update
+   * @param email - New email
+   * @throws ConflictException
+   */
+  private async updateUserEmail(user: User, email: string) {
+    const exists = await this.findOneByEmail(email);
+
+    if (!exists) {
+      user.email = email;
+    } else {
+      throw new ConflictException(
+        'User with that email already exists. Please choose new email!',
+      );
+    }
+  }
+
+  /**
+   * This helper method is responsible for updating desired user with the specified name.
+   *
+   * @param user - Desired User to update
+   * @param name - New name
+   */
+  private updateUserName(user: User, name: string) {
+    user.name = name;
+  }
+
+  /**
+   * This helper method is responsible for updating desired user with the specified password. It
+   * has built-in protection against updating with the same password. It compares specified password
+   * with the user's current password. If different, user's password is updated. Otherwise,
+   * BadRequestException is thrown.
+   *
+   * @param user - Desired User to update
+   * @param password - New password
+   * @throws BadRequestException
+   */
+  private async updateUserPassword(user: User, password: string) {
+    const hashedPassword = await hashPassword(password);
+
+    // If new password and user's current password is different
+    if (!(await bcrypt.compare(password, user.password))) {
+      user.password = hashedPassword;
+    } else {
+      throw new BadRequestException(
+        'User already has that password. Please input new password!',
+      );
+    }
   }
 }
