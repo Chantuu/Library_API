@@ -182,4 +182,26 @@ export class UsersService {
       );
     }
   }
+
+  /**
+   * This method is responsible for deleting desired user from the api. It searches an User
+   * based on the specified id parameter. If found, user with that id is deleted. Otherwise,
+   * throws BadRequestException.
+   *
+   * @param id - Desired User to delete
+   * @returns Deleted User
+   * @throws BadRequestException
+   */
+  async deleteUser(id: number) {
+    const user = await this.findOneById(id);
+
+    if (user) {
+      await this.usersRepository.remove([user]);
+      return user;
+    } else {
+      throw new BadRequestException(
+        'User with the provided id could not be found. Please, provide correct id!',
+      );
+    }
+  }
 }
