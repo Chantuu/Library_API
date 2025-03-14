@@ -31,20 +31,14 @@ export class AuthGuard implements CanActivate {
           secret: process.env.JWT_MODULE_SECRET,
         },
       );
-
-      try {
-        const foundUser = await this.usersService.findOneByEmail(
-          payload.userEmail,
-        );
-        if (foundUser) {
-          request['user'] = foundUser; // Save user information for route handlers
-          return true;
-        } else {
-          return false;
-        }
-      } catch {
-        // Throws internal server error, if something fails in the TypeORM's end, such as database connection loss
-        throw new InternalServerErrorException();
+      const foundUser = await this.usersService.findOneByEmail(
+        payload.userEmail,
+      );
+      if (foundUser) {
+        request['user'] = foundUser; // Save user information for route handlers
+        return true;
+      } else {
+        return false;
       }
     } catch {
       throw new BadRequestException(
