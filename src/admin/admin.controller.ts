@@ -1,15 +1,20 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { AdminGuard } from './admin.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { PatchUserBodyDTO } from './dtos/patchUserBody.dto';
+import { User } from 'src/users/user.entity';
+import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
 
 @Controller('admin')
 @UseGuards(AuthGuard, AdminGuard)
@@ -32,7 +37,7 @@ export class AdminController {
   }
 
   /**
-   * This is a handler for the GET /admin/users endpoint. It returns desired user
+   * This is a handler for the GET /admin/users/:id endpoint. It returns desired user
    * information as a response. This handler requires id as an url parameter to
    * perform search. If id is incorrect, appropriate error response will be sent.
    */
@@ -46,5 +51,19 @@ export class AdminController {
         'User with the provided id could not be found. Please, provide correct id!',
       );
     }
+  }
+
+  /**
+   * This is a handler for the PATCH /admin/users/:id endpoint. It updates specified
+   * user with the information specified in the request body. Both id and request bodies
+   * are validated. If id or request body is invalid, an appropriate error response
+   * will be sent.
+   */
+  @Patch('users/:id')
+  async updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(PatchDtoPipe<User>) patchUserBody: PatchUserBodyDTO,
+  ) {
+    return await this.usersService.updateUser(id, patchUserBody);
   }
 }
