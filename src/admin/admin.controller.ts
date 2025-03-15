@@ -17,6 +17,7 @@ import { PatchUserBodyDTO } from './dtos/patchUserBody.dto';
 import { User } from 'src/users/user.entity';
 import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
 import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
+import { formatResponse } from 'src/utilities/functions/formatRepsonse';
 
 @Controller('admin')
 @UseGuards(AuthGuard, AdminGuard)
@@ -45,9 +46,9 @@ export class AdminController {
    */
   @Get('users/:id')
   async findOneUser(@IntIdParam('id') id: number) {
-    const User = await this.usersService.findOneById(id);
-    if (User) {
-      return { result: User };
+    const user = await this.usersService.findOneById(id);
+    if (user) {
+      return formatResponse(user);
     } else {
       throw new BadRequestException(
         'User with the provided id could not be found. Please, provide correct id!',
@@ -66,7 +67,8 @@ export class AdminController {
     @IntIdParam('id') id: number,
     @Body(PatchDtoPipe<User>) patchUserBody: PatchUserBodyDTO,
   ) {
-    return await this.usersService.updateUser(id, patchUserBody);
+    const updatedUser = await this.usersService.updateUser(id, patchUserBody);
+    return formatResponse(updatedUser, 'Successfuly updated requested user');
   }
 
   /**
@@ -76,9 +78,12 @@ export class AdminController {
    */
   @Delete('users/:id')
   async deleteUser(@IntIdParam('id') id: number) {
-    return {
-      message: 'Successfully deleted requested user',
-      deletedUser: await this.usersService.deleteUser(id),
-    };
+    const deletedUser = await this.usersService.deleteUser(id);
+
+    return formatResponse(deletedUser, 'Successfuly deleted requested user');
+    // {
+    //   message: 'Successfully deleted requested user',
+    //   deletedUser: await this.usersService.deleteUser(id),
+    // };
   }
 }
