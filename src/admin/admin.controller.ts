@@ -16,6 +16,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { PatchUserBodyDTO } from './dtos/patchUserBody.dto';
 import { User } from 'src/users/user.entity';
 import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
+import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
 
 @Controller('admin')
 @UseGuards(AuthGuard, AdminGuard)
@@ -43,7 +44,7 @@ export class AdminController {
    * perform search. If id is incorrect, appropriate error response will be sent.
    */
   @Get('users/:id')
-  async findOneUser(@Param('id', ParseIntPipe) id: number) {
+  async findOneUser(@IntIdParam('id') id: number) {
     const User = await this.usersService.findOneById(id);
     if (User) {
       return { result: User };
@@ -62,7 +63,7 @@ export class AdminController {
    */
   @Patch('users/:id')
   async updateUser(
-    @Param('id', ParseIntPipe) id: number,
+    @IntIdParam('id') id: number,
     @Body(PatchDtoPipe<User>) patchUserBody: PatchUserBodyDTO,
   ) {
     return await this.usersService.updateUser(id, patchUserBody);
@@ -74,7 +75,7 @@ export class AdminController {
    * deleted. If id is invalid, an appropriate error response will be sent.
    */
   @Delete('users/:id')
-  async deleteUser(@Param('id', ParseIntPipe) id: number) {
+  async deleteUser(@IntIdParam('id') id: number) {
     return {
       message: 'Successfully deleted requested user',
       deletedUser: await this.usersService.deleteUser(id),
