@@ -44,12 +44,20 @@ export class UsersService {
    * @param userData - Object containing all user parameters in that interface.
    */
   async createUser(userData: Partial<User>) {
-    const hashedPassword = await hashPassword(userData.password as string);
+    const exists = await this.findOneByEmail(userData.email as string);
 
-    userData.password = hashedPassword;
+    if (!exists) {
+      const hashedPassword = await hashPassword(userData.password as string);
 
-    const user = this.usersRepository.create({ ...userData });
-    this.usersRepository.save(user);
+      userData.password = hashedPassword;
+
+      const user = this.usersRepository.create({ ...userData });
+      this.usersRepository.save(user);
+    } else {
+      throw new ConflictException(
+        'User with that email already exists. Please choose new email!',
+      );
+    }
   }
 
   /**

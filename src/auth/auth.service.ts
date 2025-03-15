@@ -16,24 +16,13 @@ export class AuthService {
   ) {}
 
   /**
-   * This method is responsible for handling user registration. First it checks, If an user with the specified email exists.
-   * If not, user is registered. Otherwise, ConflictException is thrown.
+   * This method is responsible for handling user registration.
    *
    * @param registerUserDetails - An object containing all required user dataproperties for registration
    * @throws ConflictException
    */
   async registerUser(registerUserDetails: Partial<User>) {
-    const user = await this.usersService.findOneByEmail(
-      registerUserDetails.email as string,
-    );
-
-    if (!user) {
-      await this.usersService.createUser(registerUserDetails);
-    } else {
-      throw new ConflictException(
-        'User with that email already exists. Please choose new email!',
-      );
-    }
+    await this.usersService.createUser(registerUserDetails);
   }
 
   /**
