@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { AdminModule } from './admin/admin.module';
+import { BooksModule } from './books/books.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AdminModule } from './admin/admin.module';
     AuthModule,
     UsersModule,
     AdminModule,
+    BooksModule,
   ],
 })
 export class AppModule implements OnModuleInit {
