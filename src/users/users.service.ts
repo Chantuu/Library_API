@@ -203,9 +203,13 @@ export class UsersService {
   async deleteUser(id: number) {
     const user = await this.findOneById(id);
 
-    if (user) {
+    if (user && user.role !== 'admin') {
       await this.usersRepository.remove([user]);
       return user;
+    } else if (user && user.role === 'admin') {
+      throw new BadRequestException(
+        'You can not delete your (Admin) account. Please, choose user accounts!',
+      );
     } else {
       throw new BadRequestException(
         'User with the provided id could not be found. Please, provide correct id!',
