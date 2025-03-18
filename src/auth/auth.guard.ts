@@ -10,6 +10,7 @@ import { UsersService } from 'src/users/users.service';
 /**
  * This Guard is responsible for authorizing users in the API for
  * uploading and managing resources created by that user.
+ * NOTE: This Guard requires import of the UsersModule for it's functionality.
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
