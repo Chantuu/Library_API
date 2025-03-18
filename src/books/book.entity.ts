@@ -1,4 +1,4 @@
-import { Author } from 'src/author/author.entity';
+import { Author } from 'src/authors/author.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,

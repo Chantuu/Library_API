@@ -7,7 +7,7 @@ import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { AdminModule } from './admin/admin.module';
 import { BooksModule } from './books/books.module';
-import { AuthorModule } from './author/author.module';
+import { AuthorsModule } from './authors/authors.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { AuthorModule } from './author/author.module';
     UsersModule,
     AdminModule,
     BooksModule,
-    AuthorModule,
+    AuthorsModule,
   ],
 })
 export class AppModule implements OnModuleInit {
