@@ -1,9 +1,11 @@
+import { Book } from 'src/books/book.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -25,6 +27,9 @@ export class Author {
     onUpdate: 'CASCADE',
   })
   uploadedBy?: User;
+
+  @OneToMany(() => Book, (book) => book.author)
+  books: Book[];
 
   @CreateDateColumn()
   uploadedAt: Date;

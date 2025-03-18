@@ -1,3 +1,4 @@
+import { Author } from 'src/author/author.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -31,6 +32,9 @@ export class Book {
     onUpdate: 'CASCADE',
   })
   uploadedBy?: User;
+
+  @ManyToOne(() => Author, (author) => author.books)
+  author: Author;
 
   @CreateDateColumn()
   uploadedAt: Date;
