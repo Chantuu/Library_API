@@ -3,7 +3,6 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
