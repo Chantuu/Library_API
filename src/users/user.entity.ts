@@ -1,7 +1,10 @@
+import { Author } from 'src/author/author.entity';
+import { Book } from 'src/books/book.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -24,6 +27,9 @@ export class User {
     default: 'user',
   })
   role: 'user' | 'admin';
+
+  @OneToMany(() => Book, (book) => book.uploadedBy)
+  uploadedBooks: Book[];
 
   @CreateDateColumn()
   createdAt: Date;

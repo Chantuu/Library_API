@@ -25,6 +25,13 @@ export class Book {
   @Column({ default: 'No Description ' })
   description: string;
 
+  @ManyToOne(() => User, (user) => user.uploadedBooks, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  uploadedBy?: User;
+
   @CreateDateColumn()
   uploadedAt: Date;
 
