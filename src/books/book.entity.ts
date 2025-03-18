@@ -20,8 +20,8 @@ export class Book {
   @Column()
   genre: string;
 
-  @Column({ type: 'date' })
-  publishedYear: Date;
+  @Column()
+  publishedYear: number;
 
   @Column({ default: 'No Description ' })
   description: string;
