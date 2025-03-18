@@ -31,6 +31,9 @@ export class User {
   @OneToMany(() => Book, (book) => book.uploadedBy)
   uploadedBooks: Book[];
 
+  @OneToMany(() => Author, (author) => author.uploadedBy)
+  uploadedAuthors: Author[];
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -19,6 +19,13 @@ export class Author {
   @Column({ nullable: true })
   birthDate?: Date;
 
+  @ManyToOne(() => User, (user) => user.uploadedAuthors, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  uploadedBy?: User;
+
   @CreateDateColumn()
   uploadedAt: Date;
 
