@@ -15,6 +15,9 @@ export class Author {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  name: string;
+
   @Column({ default: 'No Biography Provided' })
   biography: string;
 
