@@ -9,7 +9,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { hashPassword } from 'src/utilities/functions/hashPassword';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
-import { RegisterUseBodyDTO } from 'src/auth/dtos/registerUserBody.dto';
+import { RegisterUserBodyDTO } from 'src/auth/dtos/registerUserBody.dto';
 
 @Injectable()
 export class UsersService {
@@ -44,7 +44,7 @@ export class UsersService {
    *
    * @param userData - Object containing all user parameters.
    */
-  async createUser(userData: RegisterUseBodyDTO) {
+  async createUser(userData: RegisterUserBodyDTO) {
     const exists = await this.findOneByEmail(userData.email as string);
 
     if (!exists) {

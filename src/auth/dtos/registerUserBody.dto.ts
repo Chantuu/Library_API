@@ -1,6 +1,6 @@
 import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class RegisterUseBodyDTO {
+export class RegisterUserBodyDTO {
   @IsString()
   @MinLength(3)
   @MaxLength(32)
