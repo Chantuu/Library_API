@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/user.entity';
+import { RegisterUseBodyDTO } from './dtos/registerUserBody.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,10 +14,10 @@ export class AuthService {
   /**
    * This method is responsible for handling user registration.
    *
-   * @param registerUserDetails - An object containing all required user dataproperties for registration
+   * @param registerUserDetails - An object containing all required user data properties for registration
    * @throws ConflictException
    */
-  async registerUser(registerUserDetails: Partial<User>) {
+  async registerUser(registerUserDetails: RegisterUseBodyDTO) {
     await this.usersService.createUser(registerUserDetails);
   }
 

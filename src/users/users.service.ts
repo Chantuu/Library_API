@@ -9,6 +9,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { hashPassword } from 'src/utilities/functions/hashPassword';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
+import { RegisterUseBodyDTO } from 'src/auth/dtos/registerUserBody.dto';
 
 @Injectable()
 export class UsersService {
@@ -41,9 +42,9 @@ export class UsersService {
    * This method creates and saves new User in the database using the properties defined in Usee entity.
    * Before creating and saving a user, it's password is immidiately hashed for security reasons.
    *
-   * @param userData - Object containing all user parameters in that interface.
+   * @param userData - Object containing all user parameters.
    */
-  async createUser(userData: Partial<User>) {
+  async createUser(userData: RegisterUseBodyDTO) {
     const exists = await this.findOneByEmail(userData.email as string);
 
     if (!exists) {
