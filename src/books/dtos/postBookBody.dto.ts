@@ -6,7 +6,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class postBookBodyDTO {
+export class PostBookBodyDTO {
   @IsString()
   @MinLength(4)
   @MaxLength(32)
