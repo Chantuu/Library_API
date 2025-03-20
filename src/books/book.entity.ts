@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { Author } from 'src/authors/author.entity';
 import { User } from 'src/users/user.entity';
 import {
@@ -31,9 +32,20 @@ export class Book {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
+  @Transform(({ value }) => {
+    return { id: value.id, name: value.name, email: value.email }; // Returns serialized User entity in response
+  })
   uploadedBy?: User;
 
   @ManyToOne(() => Author, (author) => author.books)
+  @Transform(({ value }) => {
+    return {
+      id: value.id,
+      name: value.name,
+      biography: value.biography,
+      birthDate: value.birthDate,
+    }; // Returns serialized User entity in response
+  })
   author: Author;
 
   @CreateDateColumn()
