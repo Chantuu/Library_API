@@ -1,4 +1,8 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Module,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
@@ -8,6 +12,7 @@ import { UsersService } from './users/users.service';
 import { AdminModule } from './admin/admin.module';
 import { BooksModule } from './books/books.module';
 import { AuthorsModule } from './authors/authors.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -30,6 +35,12 @@ import { AuthorsModule } from './authors/authors.module';
     AdminModule,
     BooksModule,
     AuthorsModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
   ],
 })
 export class AppModule implements OnModuleInit {
