@@ -1,5 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
-import { ObjectLiteral, Repository } from 'typeorm';
+import {
+  FindOptionsRelations,
+  FindOptionsWhere,
+  ObjectLiteral,
+  Repository,
+} from 'typeorm';
 
 /**
  * This generic function is used for paginating all results from the specified entity repository.
@@ -10,6 +15,8 @@ import { ObjectLiteral, Repository } from 'typeorm';
  * @param entityRepository - TypeORM repository for specified entity
  * @param itemsOnPage - (optional) Desired number of items on a page
  * @param page - (optional) Desired page
+ * @param searchCriterium - (optional) Object containing all search criteriums for searching desired entities. (TypeORM where clause)
+ * @param relationCriterium - (optional) Object containing information, which related entities should be loaded too. (TypeORM relations clause)
  * @returns - A promise containing formatted object consisting from paginated entity array, total entity count and current page.
  * @throws - BadRequestException
  */
@@ -17,8 +24,15 @@ export async function paginateResponse<EntityT extends ObjectLiteral>(
   entityRepository: Repository<EntityT>,
   itemsOnPage: number = 10,
   page: number = 1,
+  searchCriterium?:
+    | FindOptionsWhere<EntityT>
+    | FindOptionsWhere<EntityT>[]
+    | undefined,
+  relationCriterium?: FindOptionsRelations<EntityT> | undefined,
 ) {
-  const entityCount = await entityRepository.count();
+  const entityCount = await entityRepository.count({
+    where: searchCriterium,
+  });
   const maxPages = Math.ceil(entityCount / itemsOnPage); // Calculate maximum  available pages
 
   // Checking, that paging parameters are correctly provided
@@ -26,8 +40,10 @@ export async function paginateResponse<EntityT extends ObjectLiteral>(
     if (page <= maxPages) {
       const pagesToSkip = page - 1;
       const entityArray = await entityRepository.find({
+        where: searchCriterium,
         take: itemsOnPage,
         skip: itemsOnPage * pagesToSkip, // Calculating how many items to skip
+        relations: relationCriterium,
       });
 
       return {
@@ -37,7 +53,7 @@ export async function paginateResponse<EntityT extends ObjectLiteral>(
       };
     } else {
       throw new BadRequestException(
-        'A requested page does not exist. Please provide correct page number!',
+        'A requested page does not exist. Please provide query parameters!',
       );
     }
   } else {
