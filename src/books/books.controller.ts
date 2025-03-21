@@ -1,4 +1,12 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { PostBookBodyDTO } from './dtos/postBookBody.dto';
 import { BooksService } from './books.service';
@@ -7,9 +15,33 @@ import { User } from 'src/users/user.entity';
 import { formatResponse } from 'src/utilities/functions/formatRepsonse';
 
 @Controller('books')
-@UseGuards(AuthGuard)
 export class BooksController {
   constructor(private booksService: BooksService) {}
+
+  /**
+   * This is a handler for GET /books endpoint. This handler can recieve optional query parameters,
+   * number type query parameters are properly validated. It returns customized and paginated result
+   * of the found Book entities as a response based on those query parameters.
+   */
+  @Get()
+  async findAllBooks(
+    @Query('itemsOnPage', new ParseIntPipe({ optional: true }))
+    itemsOnPage?: number,
+    @Query('page', new ParseIntPipe({ optional: true }))
+    page?: number,
+    @Query('author') author?: string,
+    @Query('genre') genre?: string,
+    @Query('publishYear', new ParseIntPipe({ optional: true }))
+    publishYear?: number,
+  ) {
+    return await this.booksService.getPaginatedBooks(
+      itemsOnPage,
+      page,
+      author,
+      genre,
+      publishYear,
+    );
+  }
 
   /**
    * This is a handler for the POST /books endpoint. It validates and creates new Book
@@ -17,6 +49,7 @@ export class BooksController {
    * resource or correct error response.
    */
   @Post()
+  @UseGuards(AuthGuard)
   async addBook(@Body() postBookBody: PostBookBodyDTO, @GetUser() user: User) {
     return formatResponse(
       await this.booksService.createBook(postBookBody, user),
