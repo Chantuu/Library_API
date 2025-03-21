@@ -10,6 +10,7 @@ import { AuthorsService } from 'src/authors/authors.service';
 import { PostBookBodyDTO } from './dtos/postBookBody.dto';
 import { User } from 'src/users/user.entity';
 import { Author } from 'src/authors/author.entity';
+import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 
 @Injectable()
 export class BooksService {
@@ -102,5 +103,46 @@ export class BooksService {
         'You can not modify resources uploaded by other users!',
       );
     }
+  }
+
+  /**
+   * This method is responsible for returing paginated results of the Book entities based on the provided optional
+   * parameters. First two optional parameters are responsible for customizing pagination. Last three optional
+   * parameters are used to filter Book entities and return filtered result
+   *
+   * @param itemsOnPage - (optional) Desired number of items on a page
+   * @param page - (optional) Desired page
+   * @param author - (optional) Filter items based on a desired author
+   * @param genre - (optional) Filter items based on a desired genre
+   * @param publishedYear - (optional) Filter items based on a desired publish year
+   * @returns Paginated result of the found Books
+   */
+  async getPaginatedBooks(
+    itemsOnPage?: number,
+    page?: number,
+    author?: string,
+    genre?: string,
+    publishedYear?: number,
+  ) {
+    // TypeORM where clause object
+    const searchCriterium = {
+      ...(genre && { genre }),
+      ...(publishedYear && { publishedYear }),
+      ...(author && { author: { name: author } }),
+    };
+
+    // TypeORM relations clause object
+    const relationCriterium = {
+      author: true,
+      uploadedBy: true,
+    };
+
+    return await paginateResponse<Book>(
+      this.booksRepository,
+      itemsOnPage,
+      page,
+      searchCriterium,
+      relationCriterium,
+    );
   }
 }
