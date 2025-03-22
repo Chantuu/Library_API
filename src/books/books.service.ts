@@ -145,4 +145,19 @@ export class BooksService {
       relationCriterium,
     );
   }
+
+  /**
+   * This method tries to find a Book entity based on the supplied id parameter.
+   * If Book entity with that Id is found, it is returned. Otherwise, this method
+   * returns null.
+   *
+   * @param id - Id of the desired Book entity
+   * @returns Found Book entity or null
+   */
+  findOneById(id: number) {
+    return this.booksRepository.findOne({
+      where: { id },
+      relations: { author: true, uploadedBy: true },
+    });
+  }
 }
