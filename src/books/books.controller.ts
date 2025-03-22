@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -13,6 +14,7 @@ import { BooksService } from './books.service';
 import { GetUser } from 'src/utilities/decorators/user.decorator';
 import { User } from 'src/users/user.entity';
 import { formatResponse } from 'src/utilities/functions/formatRepsonse';
+import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
 
 @Controller('books')
 export class BooksController {
@@ -41,6 +43,24 @@ export class BooksController {
       genre,
       publishYear,
     );
+  }
+
+  /**
+   * This is a handler for GET /books/:id endpoint. It requires id as a url parameter
+   * to find specific Book. If that Book entity is found, it is returned. Otherwise,
+   * a proper error response is returned to the user.
+   */
+  @Get(':id')
+  async findBookById(@IntIdParam('id') id: number) {
+    const result = await this.booksService.findOneById(id);
+
+    if (result) {
+      return formatResponse(result);
+    } else {
+      throw new BadRequestException(
+        'User with the provided id could not be found. Please, provide correct id!',
+      );
+    }
   }
 
   /**
