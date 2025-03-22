@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -15,6 +16,9 @@ import { GetUser } from 'src/utilities/decorators/user.decorator';
 import { User } from 'src/users/user.entity';
 import { formatResponse } from 'src/utilities/functions/formatRepsonse';
 import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
+import { PatchBookBodyDTO } from './dtos/patchBookBody.dto';
+import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
+import { Book } from './book.entity';
 
 @Controller('books')
 export class BooksController {
@@ -74,6 +78,26 @@ export class BooksController {
     return formatResponse(
       await this.booksService.createBook(postBookBody, user),
       'A new book has successfully been added',
+    );
+  }
+
+  /**
+   * This is a handler for the PATCH /books/:id endpoint. It validates id url parameter and
+   * incoming request body. If validation successfull, this method will try to update book
+   * with the provided data. It also checks for book and author uploader to prevent accessing
+   * other user's resources. If all of these conditions are met, desired Book is updated and
+   * returned to the user. Otherwise, appropriate error response is sent out.
+   */
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  async updateBook(
+    @IntIdParam('id') id: number,
+    @GetUser() user: User,
+    @Body(PatchDtoPipe<Book>) patchBookBody: PatchBookBodyDTO,
+  ) {
+    return formatResponse(
+      await this.booksService.updateBook(id, patchBookBody, user),
+      'Requested book has been successfully updated!',
     );
   }
 }
