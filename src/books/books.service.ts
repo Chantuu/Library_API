@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,6 +13,7 @@ import { PostBookBodyDTO } from './dtos/postBookBody.dto';
 import { User } from 'src/users/user.entity';
 import { Author } from 'src/authors/author.entity';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
+import { PatchBookBodyDTO } from './dtos/patchBookBody.dto';
 
 @Injectable()
 export class BooksService {
@@ -28,6 +31,7 @@ export class BooksService {
    * @param bookData - Object containing all properties necessary for new Book creation
    * @param currentUser - Current user performing this operation
    * @returns Newly created Book
+   * @throws ConflictException
    */
   async createBook(bookData: PostBookBodyDTO, currentUser: User) {
     const authorExists = await this.authorsService.findOneByName(
@@ -57,6 +61,7 @@ export class BooksService {
         authorExists,
         newBook,
         currentUser,
+        true,
       );
 
       await this.booksRepository.save(newBook);
@@ -72,30 +77,40 @@ export class BooksService {
    * This is a helper method for createBook method. This method adds newly created book to the desired
    * author if it exists. If this author does not exist, it is created using authorsService and new book
    * is added. If author exists, but it is uploaded by another user, current user can not add book to that
-   * author.
+   * author. New author creation can be specified by providing createNewAuthor argument, which will create
+   * new author if desired.
    *
    * @param authorName - Name for new author. (Used, if author with current name does not exist)
    * @param authorExists - Result of the findOne operation for Author entity.
    * @param book - Desired Book to be added to the desired author
    * @param currentUser - Current user performing this operation.
+   * @param createNewAuthor - Boolean value, if creating new author is desired behavior
+   * @throws BadRequestException
+   * @throws UnauthorizedException
    */
   private async addBookToAuthor(
     authorName: string,
     authorExists: Author | null,
     book: Book,
     currentUser: User,
+    createNewAuthor: boolean = false,
   ) {
     // If author exists and author was uploaded by current user
     if (authorExists && authorExists.uploadedBy?.id === currentUser.id) {
       book.author = authorExists;
     }
-    // If author does not exist
-    else if (!authorExists) {
+    // If author does not exist and user wants to create new author
+    else if (!authorExists && createNewAuthor) {
       const newAuthor = await this.authorsService.createAuthorByName(
         authorName,
         currentUser,
       );
       book.author = newAuthor;
+      // If author does not exist and user does not want to create new author
+    } else if (!authorExists && !createNewAuthor) {
+      throw new BadRequestException(
+        'Specified author does not exist. Please choose existing author!',
+      );
     }
     // If author exists, but was not uploaded by the current user
     else {
@@ -159,5 +174,82 @@ export class BooksService {
       where: { id },
       relations: { author: true, uploadedBy: true },
     });
+  }
+
+  /**
+   * This method is responsible for updating existing desired book. It updates this method based
+   * on the provided object containing all properties with new data. It also will check for the uploader
+   * of the specified book and existence of the specified author. This method will update book
+   * with initialized propeties from this object and return updated book. If this book was uploaded by
+   * another user or specified author does not exist, it will throw corresponding exception.
+   *
+   * @param id - Id of the desired Book
+   * @param bookData - Object containing all properties for updating desired Book
+   * @param currentUser - Current User performing this operation
+   * @returns Updated Book
+   * @throws ForbiddenException
+   * @throws BadRequestException
+   */
+  async updateBook(id: number, bookData: PatchBookBodyDTO, currentUser: User) {
+    const bookExists = await this.findOneById(id);
+
+    // If a book with specified id exists and current user is uploader of that book
+    if (bookExists && bookExists.uploadedBy?.id === currentUser.id) {
+      if (bookData.title) {
+        bookExists.title = bookData.title;
+      }
+      if (bookData.genre) {
+        bookExists.genre = bookData.genre;
+      }
+      if (bookData.publishedYear) {
+        bookExists.publishedYear = bookData.publishedYear;
+      }
+      if (bookData.author) {
+        await this.updateBookAuthor(bookData.author, bookExists, currentUser);
+      }
+      if (bookData.description) {
+        bookExists.description = bookData.description;
+      }
+
+      const updatedBook = this.booksRepository.save(bookExists);
+      return updatedBook;
+    }
+    // If that book was uploaded by another user
+    else if (bookExists && bookExists.uploadedBy?.id !== currentUser.id) {
+      throw new ForbiddenException(
+        'You can not modify resources uploaded by other users!',
+      );
+    } else {
+      throw new BadRequestException(
+        'The book with specified id does not exist. Please, type correct id!',
+      );
+    }
+  }
+
+  /**
+   * This is a helper method for updateBook() method, which contains logic to properly
+   * update author of the desired Book. It uses addBookToAuthor() method to update author
+   * properly.
+   *
+   * @param authorName - Name of the author for updating Book
+   * @param currentBook - Desired Book to be updated
+   * @param currentUser - Current User performing this operation
+   */
+  private async updateBookAuthor(
+    authorName: string,
+    currentBook: Book,
+    currentUser: User,
+  ) {
+    const authorExists = await this.authorsService.findOneByName(
+      authorName,
+      true,
+    );
+
+    await this.addBookToAuthor(
+      authorName,
+      authorExists,
+      currentBook,
+      currentUser,
+    );
   }
 }
