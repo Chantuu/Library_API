@@ -28,7 +28,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_MODULE_SECRET,
-      signOptions: { expiresIn: '240s' },
+      signOptions: { expiresIn: process.env.JWT_TOKEN_EXPIRATION_SECONDS },
     }),
     AuthModule,
     UsersModule,
