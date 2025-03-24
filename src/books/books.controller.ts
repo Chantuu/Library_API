@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   ParseIntPipe,
   Patch,
@@ -98,6 +99,21 @@ export class BooksController {
     return formatResponse(
       await this.booksService.updateBook(id, patchBookBody, user),
       'Requested book has been successfully updated!',
+    );
+  }
+
+  /**
+   * This is a handler for DELETE /books/:id endpoint. It deletes a Book based
+   * on a provided id url parameter and user performing this operation. If a
+   * Book with that id exists and current User is uploader of that book, it is
+   * successfully deleted. Otherwise, appropriate error response is sent.
+   */
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  async deleteBook(@IntIdParam('id') id: number, @GetUser() user: User) {
+    return formatResponse(
+      await this.booksService.deleteBook(id, user),
+      'Requested book has been successfully deleted!',
     );
   }
 }
