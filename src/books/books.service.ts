@@ -252,4 +252,36 @@ export class BooksService {
       currentUser,
     );
   }
+
+  /**
+   * This method is responsible for deleting a Book entity based on given id and
+   * user entity. It checks for existence of that book and if it's uploader's id
+   * matches current user's id. In case this condition is satisfied, specified
+   * Book entity is deleted. Otherwise, corresponding nest exception is thrown.
+   *
+   * @param bookId - Id of the desired book
+   * @param currentUser - User performing current operation
+   * @returns Deleted Book entity
+   * @throws ForbiddenException
+   * @throws BadRequestException
+   */
+  async deleteBook(bookId: number, currentUser: User) {
+    const bookExists = await this.findOneById(bookId);
+
+    // If specified book exists and that book was uploaded by current user
+    if (bookExists && bookExists.uploadedBy?.id === currentUser.id) {
+      const deletedBook = this.booksRepository.remove(bookExists);
+      return deletedBook;
+    }
+    // If Specified book exists, but was not uploaded by current user
+    else if (bookExists && bookExists.uploadedBy?.id !== currentUser.id) {
+      throw new ForbiddenException(
+        'You can not modify resources uploaded by other users!',
+      );
+    } else {
+      throw new BadRequestException(
+        'The book with specified id does not exist. Please, type correct id!',
+      );
+    }
+  }
 }
