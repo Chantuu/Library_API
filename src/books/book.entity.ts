@@ -33,18 +33,30 @@ export class Book {
     onUpdate: 'CASCADE',
   })
   @Transform(({ value }) => {
-    return { id: value.id, name: value.name, email: value.email }; // Returns serialized User entity in response
+    // If User entity was specified in relationships
+    if (value) {
+      // Returns serialized User entity in response
+      return {
+        id: value.id,
+        name: value.name,
+        email: value.email,
+      };
+    }
   })
   uploadedBy?: User;
 
   @ManyToOne(() => Author, (author) => author.books)
   @Transform(({ value }) => {
-    return {
-      id: value.id,
-      name: value.name,
-      biography: value.biography,
-      birthDate: value.birthDate,
-    }; // Returns serialized User entity in response
+    // If User entity was specified in relationships
+    if (value) {
+      // Returns serialized Author entity in response
+      return {
+        id: value.id,
+        name: value.name,
+        biography: value.biography,
+        birthDate: value.birthDate,
+      };
+    }
   })
   author: Author;
 
