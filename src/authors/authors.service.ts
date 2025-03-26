@@ -4,6 +4,7 @@ import { Author } from './author.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
+import { postAuthorBodyDTO } from './dtos/postAuthorBody.dto';
 
 @Injectable()
 export class AuthorsService {
@@ -85,5 +86,42 @@ export class AuthorsService {
       where: { id: authorId },
       relations: { uploadedBy: true, books: true },
     });
+  }
+
+  /**
+   * This method is responsible for creating new Author entity. This function first validates,
+   * that no author with that exact name exists. If that condition is satisfied, new Author
+   * entity is successfully created and returned. Otherwise it throws nest ConflictException.
+   *
+   * @param authorData - Object containing all necessary data to create new Author entity
+   * @param currentUser - User performing current operation
+   * @returns Newly created Author entity
+   * @throws ConflictException
+   */
+  async createAuthor(authorData: postAuthorBodyDTO, currentUser: User) {
+    const authorExists = await this.authorsRepository.findOne({
+      where: {
+        name: authorData.name,
+      },
+      relations: {
+        books: true,
+        uploadedBy: true,
+      },
+    });
+
+    // If that author does not exist
+    if (!authorExists) {
+      const newAuthor = this.authorsRepository.create({
+        ...authorData,
+      });
+      newAuthor.uploadedBy = currentUser; // Associating newly created author with current user
+      await this.authorsRepository.save(newAuthor);
+
+      return newAuthor;
+    } else {
+      throw new ConflictException(
+        'This author already exists. Please, upload new author!',
+      );
+    }
   }
 }
