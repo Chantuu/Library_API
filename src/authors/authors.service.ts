@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from './author.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
+import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 
 @Injectable()
 export class AuthorsService {
@@ -52,5 +53,24 @@ export class AuthorsService {
         books: includeRelatedEntities,
       },
     });
+  }
+
+  /**
+   * This method finds all existing author entities and returns them as paginated result response.
+   * Under the scenes, this method uses paginateResponse generic method. First two optional
+   * parameters are responsible for customizing pagination
+   *
+   * @param itemsOnPage - Desired amount of items on one page
+   * @param page - Desired page
+   * @returns Paginated result of found Author entities
+   */
+  async getAllAuthorsPaginated(itemsOnPage?: number, page?: number) {
+    return await paginateResponse<Author>(
+      this.authorsRepository,
+      itemsOnPage,
+      page,
+      undefined, // No search filtering is needed
+      { uploadedBy: true, books: true },
+    );
   }
 }
