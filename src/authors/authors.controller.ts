@@ -1,13 +1,20 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   ParseIntPipe,
+  Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthorsService } from './authors.service';
 import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
 import { formatResponse } from 'src/utilities/functions/formatRepsonse';
+import { postAuthorBodyDTO } from './dtos/postAuthorBody.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { GetUser } from 'src/utilities/decorators/user.decorator';
+import { User } from 'src/users/user.entity';
 
 @Controller('authors')
 export class AuthorsController {
@@ -43,5 +50,23 @@ export class AuthorsController {
         'The author with provided id does not exist. Please, provide correct id!',
       );
     }
+  }
+
+  /**
+   * This is a handler for POST /authors endpoint. It creates new Author entity based on
+   * the provided request body data. This body is properly validated and in case of
+   * successfull validations, new Author is successfully registered and returned as a
+   * response. If any of these validations fail, proper error response is sent.
+   */
+  @UseGuards(AuthGuard)
+  @Post()
+  async createNewAuthor(
+    @Body() postAuthorBodyDTO: postAuthorBodyDTO,
+    @GetUser() currentUser: User,
+  ) {
+    return formatResponse(
+      await this.authorsService.createAuthor(postAuthorBodyDTO, currentUser),
+      'New author has been successfully uploaded!',
+    );
   }
 }
