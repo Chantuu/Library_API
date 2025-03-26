@@ -73,4 +73,17 @@ export class AuthorsService {
       { uploadedBy: true, books: true },
     );
   }
+
+  /**
+   * This method tries to find AutHor entity with the specified id.
+   *
+   * @param authorId - Id of the desired Author
+   * @returns Author with specified Id or null
+   */
+  async findOneById(authorId: number) {
+    return this.authorsRepository.findOne({
+      where: { id: authorId },
+      relations: { uploadedBy: true, books: true },
+    });
+  }
 }
