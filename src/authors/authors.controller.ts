@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -15,6 +16,9 @@ import { postAuthorBodyDTO } from './dtos/postAuthorBody.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { GetUser } from 'src/utilities/decorators/user.decorator';
 import { User } from 'src/users/user.entity';
+import { PatchAuthorBodyDTO } from './dtos/patchAuthorBody.dto';
+import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
+import { Author } from './author.entity';
 
 @Controller('authors')
 export class AuthorsController {
@@ -67,6 +71,32 @@ export class AuthorsController {
     return formatResponse(
       await this.authorsService.createAuthor(postAuthorBodyDTO, currentUser),
       'New author has been successfully uploaded!',
+    );
+  }
+
+  /**
+   * This is a handler for PATCH /authors/:id endpoint. It updates Author entity based
+   * on specified id url parameter and provided request body data. Url param and request
+   * body is properly validated. Further validations are carried out in AuthorsService
+   * when updating that Entity. In case of successfull validations, that Author entity
+   * is successfully updated and returned as a response. Otherwise, corresponding error
+   * response are sent out.
+   */
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  async updateAuthor(
+    @IntIdParam('id') authorId: number,
+    @Body(PatchDtoPipe<Author>)
+    patchAuthorBodyDTO: PatchAuthorBodyDTO,
+    @GetUser() currentUser: User,
+  ) {
+    return formatResponse(
+      await this.authorsService.updateAuthor(
+        authorId,
+        patchAuthorBodyDTO,
+        currentUser,
+      ),
+      'Requested Author has been successfully updated!',
     );
   }
 }
