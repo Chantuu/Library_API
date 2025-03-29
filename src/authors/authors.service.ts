@@ -223,4 +223,29 @@ export class AuthorsService {
   private updateAuthorBirthDate(authorToUpdate: Author, birthDate: string) {
     authorToUpdate.birthDate = new Date(birthDate);
   }
+
+  /**
+   * This method is responsible for Author entity based on the supplied authorId argument.
+   * It validates that author with this id exists and current user is uploader of that resource.
+   * If true, this author entity is succcessfully deleted. Otherwise, nest BadRequestException
+   * is thrown.
+   *
+   * @param authorId - Id of the specified author
+   * @param currentUser - User performing current operation
+   * @returns Deleted Author
+   * @throws BadRequestException
+   */
+  async deleteAuthor(authorId: number, currentUser: User) {
+    const authorExists = await this.findOneById(authorId);
+
+    // If specified author exists and current user is uploader of that author
+    if (authorExists && authorExists.uploadedBy?.id === currentUser.id) {
+      const deletedAuthor = await this.authorsRepository.remove(authorExists);
+      return deletedAuthor;
+    } else {
+      throw new BadRequestException(
+        'The author with provided id does not exist. Please, provide correct id!',
+      );
+    }
+  }
 }
