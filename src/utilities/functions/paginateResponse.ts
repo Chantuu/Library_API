@@ -7,10 +7,10 @@ import {
 } from 'typeorm';
 
 /**
- * This generic function is used for paginating all results from the specified entity repository.
- * It requires desired typeORM entity as type argument and that entity's repository
- * instance for proper functionality. It has all paging parameter safety built in and returns fully formatted object ready
- * to be sent to the user as a response.
+ * This generic function is used for paginating all results from the specified entity repository. It requires
+ * desired typeORM entity as type argument and that entity's repository instance for proper functionality. It
+ * has all paging parameter safety built in and returns fully formatted object ready to be sent to the user as
+ * a response. If paging parameters are not properly provided, nest BadRequestException is thrown.
  *
  * @param entityRepository - TypeORM repository for specified entity
  * @param itemsOnPage - (optional) Desired number of items on a page

@@ -39,10 +39,12 @@ export class UsersService {
   }
 
   /**
-   * This method creates and saves new User in the database using the properties defined in Usee entity.
-   * Before creating and saving a user, it's password is immidiately hashed for security reasons.
+   * This method creates and saves new User in the database using the properties defined in User entity.
+   * Before creating and saving a user, it's password is immidiately hashed for security reasons. If
+   * that user already exists, nest ConflictException is thrown.
    *
    * @param userData - Object containing all user parameters.
+   * @throws ConflictException
    */
   async createUser(userData: RegisterUserBodyDTO) {
     const exists = await this.findOneByEmail(userData.email as string);
@@ -64,7 +66,7 @@ export class UsersService {
   /**
    * This method returns a response object with paginated array of the User entities. User can
    * provide optional arguments for customizing response pages. It uses paginateResponse generic
-   * function underhood.
+   * function under the scenes.
    *
    * @param itemsOnPage - (optional) Desired number of items on a page
    * @param page - (optional) Desired page
@@ -83,7 +85,7 @@ export class UsersService {
    * or null if that specific user was not found.
    *
    * @param email - Desired user's email
-   * @returns Promise with desired User or null
+   * @returns Promise containing desired User or null
    */
   findOneByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ email: email });
@@ -94,7 +96,7 @@ export class UsersService {
    * or null if that specific user was not found.
    *
    * @param id - Desired User id
-   * @returns Promise with desired User or null
+   * @returns Promise containing desired User or null
    */
   findOneById(id: number): Promise<User | null> {
     return this.usersRepository.findOneBy({ id: id });
@@ -104,7 +106,7 @@ export class UsersService {
    * This method is responsible for updating user data with new information. It finds user by the
    * provided id and updates it by assinging values from userData properties to the corresponding
    * entity properties. Behind the scenes,this method uses private helper methods. It returns updated
-   * user. If user is not found, this method throws BadRequestException.
+   * user. If user is not found, this method throws nest BadRequestException.
    *
    * @param id - Id for finding desired User
    * @param userData - All data to update that User
@@ -141,7 +143,7 @@ export class UsersService {
   /**
    * This helper method is responsible for updating specified user's email. First, it checks, that
    * no user exists with the provided email. If true, user's email is updated. Otherwise, it throws
-   * ConflictException.
+   * nest ConflictException.
    *
    * @param user - Desired User to update
    * @param email - New email
@@ -173,7 +175,7 @@ export class UsersService {
    * This helper method is responsible for updating desired user with the specified password. It
    * has built-in protection against updating with the same password. It compares specified password
    * with the user's current password. If different, user's password is updated. Otherwise,
-   * BadRequestException is thrown.
+   * nest BadRequestException is thrown.
    *
    * @param user - Desired User to update
    * @param password - New password
@@ -193,9 +195,9 @@ export class UsersService {
   }
 
   /**
-   * This method is responsible for deleting desired user from the api. It searches an User
-   * based on the specified id parameter. If found, user with that id is deleted. Otherwise,
-   * throws BadRequestException.
+   * This method is responsible for deleting desired user. It searches an User based on the
+   * specified id parameter. If found, user with that id is deleted. Otherwise, throws nest
+   * BadRequestException.
    *
    * @param id - Desired User to delete
    * @returns Deleted User

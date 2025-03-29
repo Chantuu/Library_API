@@ -52,8 +52,8 @@ export class BooksController {
 
   /**
    * This is a handler for GET /books/:id endpoint. It requires id as a url parameter
-   * to find specific Book. If that Book entity is found, it is returned. Otherwise,
-   * a proper error response is returned to the user.
+   * to find specific Book. This url parameter is validated. If that Book entity is found, \
+   * it is returned. Otherwise, a proper error response is returned to the user.
    */
   @Get(':id')
   async findBookById(@IntIdParam('id') id: number) {
@@ -69,9 +69,10 @@ export class BooksController {
   }
 
   /**
-   * This is a handler for the POST /books endpoint. It validates and creates new Book
-   * resource based on the details provided by the request body. It newly created Book
-   * resource or correct error response.
+   * This is a handler for the POST /books endpoint. It validates incoming request body.
+   * Further validations are carried out in createBook method. If all validations are
+   * successfull, new book is created. Otherwise, corresponding error response is sent
+   * out.
    */
   @Post()
   @UseGuards(AuthGuard)
@@ -84,10 +85,11 @@ export class BooksController {
 
   /**
    * This is a handler for the PATCH /books/:id endpoint. It validates id url parameter and
-   * incoming request body. If validation successfull, this method will try to update book
-   * with the provided data. It also checks for book and author uploader to prevent accessing
-   * other user's resources. If all of these conditions are met, desired Book is updated and
-   * returned to the user. Otherwise, appropriate error response is sent out.
+   * incoming request body. Further validations are carried out in updateBook method.
+   * If validation successfull, this method will try to update book with the provided data.
+   * It also checks for book and author uploader to prevent accessing other user's resources.
+   * If all of these conditions are met, desired Book is updated and returned to the user.
+   * Otherwise, corresponding error response is sent out.
    */
   @Patch(':id')
   @UseGuards(AuthGuard)
@@ -103,10 +105,10 @@ export class BooksController {
   }
 
   /**
-   * This is a handler for DELETE /books/:id endpoint. It deletes a Book based
-   * on a provided id url parameter and user performing this operation. If a
-   * Book with that id exists and current User is uploader of that book, it is
-   * successfully deleted. Otherwise, appropriate error response is sent.
+   * This is a handler for DELETE /books/:id endpoint. It deletes a Book based on a provided
+   * id url parameter and user performing this operation. If a Book with that id exists and current
+   * User is uploader of that book, it is successfully deleted. Otherwise, corresponding error response
+   *  is sent.
    */
   @Delete(':id')
   @UseGuards(AuthGuard)

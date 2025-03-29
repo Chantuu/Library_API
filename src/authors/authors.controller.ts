@@ -4,7 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotImplementedException,
   ParseIntPipe,
   Patch,
   Post,
@@ -28,8 +27,9 @@ export class AuthorsController {
 
   /**
    * This is a handler for GET /authors endpoint. It retrieves all existing Author entities
-   * from database and returns them paginated. itemsOnPage and page are optional query parameters
-   * used to customize pagination output. It also has query parameter validation built-in.
+   * from database and returns them as a paginated result. itemsOnPage and page are optional
+   * query parameters used to customize pagination output. It also has query parameter validation
+   * built-in.
    */
   @Get()
   async getAllAuthors(
@@ -43,7 +43,7 @@ export class AuthorsController {
   /**
    * This is a handler for GET /authors/:id endpoint. It retrieves specific Author entity
    * based on id url paramter. It has id type validation built-in. If url param is correctly
-   * validated and Author with that id exists, that AUthor entity is returned as a response.
+   * validated and Author with that id exists, that Author entity is returned as a response.
    * Otherwise, correct error response is sent.
    */
   @Get(':id')
@@ -60,9 +60,10 @@ export class AuthorsController {
 
   /**
    * This is a handler for POST /authors endpoint. It creates new Author entity based on
-   * the provided request body data. This body is properly validated and in case of
-   * successfull validations, new Author is successfully registered and returned as a
-   * response. If any of these validations fail, proper error response is sent.
+   * the provided request body data. This body is properly validated and Further validations
+   * are carried out in createAuthor method. In case of successfull validations, new Author
+   * is successfully registered and returned as a response. If any of these validations fail,
+   * corresponding error response is sent out.
    */
   @UseGuards(AuthGuard)
   @Post()

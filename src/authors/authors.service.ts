@@ -22,7 +22,7 @@ export class AuthorsService {
    * This method creates new Author, where only it's name is saved. Other properties are
    * uninitialized or use default values. This method checks, if an author with that exact
    * name exists (No regxp used). If it does not exist, new author is created with only name
-   * property initialized. Otherwise, ConflictException is thrown.
+   * property initialized. Otherwise, nest ConflictException is thrown.
    *
    * @param name - Name of the desired author
    * @param currentUser - User who creates this resource

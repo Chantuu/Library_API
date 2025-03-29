@@ -8,8 +8,11 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 
 /**
- * This Guard is responsible for authorizing users in the API for
- * uploading and managing resources created by that user.
+ * This Guard is responsible for authorizing users in the API for uploading and managing
+ * resources created by that user. This guard checks authorization header in request body
+ * and tries verify it using JWT Module. If verification is successfull, user can access
+ * that route. Otherwise, nest BadRequestException is thrown.
+ *
  * NOTE: This Guard requires import of the UsersModule for it's functionality.
  */
 @Injectable()

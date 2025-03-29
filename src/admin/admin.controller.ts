@@ -41,7 +41,8 @@ export class AdminController {
   /**
    * This is a handler for the GET /admin/users/:id endpoint. It returns desired user
    * information as a response. This handler requires id as an url parameter to
-   * perform search. If id is incorrect, appropriate error response will be sent.
+   * perform search and checks, that user with this id exists. If id is incorrect,
+   * corresponding error response is sent out.
    */
   @Get('users/:id')
   async findOneUser(@IntIdParam('id') id: number) {
@@ -58,8 +59,8 @@ export class AdminController {
   /**
    * This is a handler for the PATCH /admin/users/:id endpoint. It updates specified
    * user with the information specified in the request body. Both id and request bodies
-   * are validated. If id or request body is invalid, an appropriate error response
-   * will be sent.
+   * are validated. Further validations are carried out in updateUser method. If id or
+   * request body is invalid, corresponding error response is sent out.
    */
   @Patch('users/:id')
   async updateUser(
@@ -73,7 +74,7 @@ export class AdminController {
   /**
    * This is a handler for the DELETE /admin/users/:id endpoint. It deletes desired
    * user based on the provided id url parameter. If found, an user with that id is
-   * deleted. If id is invalid, an appropriate error response will be sent.
+   * deleted. If id is invalid, an appropriate error response is sent out.
    */
   @Delete('users/:id')
   async deleteUser(@IntIdParam('id') id: number) {

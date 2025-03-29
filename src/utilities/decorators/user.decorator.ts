@@ -2,7 +2,8 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 /**
  * This decorator is used to extract user entity from the request body.
- * It must be used after AuthGuard to properly extract and return an user.
+ *
+ * Note: It must be used after AuthGuard to properly extract and return an user.
  */
 export const GetUser = createParamDecorator(
   (data: any, context: ExecutionContext) => {

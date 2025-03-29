@@ -25,7 +25,7 @@ export class BooksService {
   /**
    * This method is responsible for creating new Book. It first checks for the existence  of
    * the specified book and author. If book with that properties exists, operation is immidiately
-   * aborted and error response is sent out. Otherwise, new book is created and associated with
+   * aborted and nest ConflictException is thrown. Otherwise, new book is created and associated with
    * current user. After that, author association logic is handled by addBookToAuthor method.
    *
    * @param bookData - Object containing all properties necessary for new Book creation
@@ -181,7 +181,7 @@ export class BooksService {
    * on the provided object containing all properties with new data. It also will check for the uploader
    * of the specified book and existence of the specified author. This method will update book
    * with initialized propeties from this object and return updated book. If this book was uploaded by
-   * another user or specified author does not exist, it will throw corresponding exception.
+   * another user or specified author does not exist, it will throw corresponding nest exception.
    *
    * @param id - Id of the desired Book
    * @param bookData - Object containing all properties for updating desired Book

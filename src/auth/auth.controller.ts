@@ -10,7 +10,9 @@ export class AuthController {
   /**
    * This is a handler for POST /auth/register endpoint. It is responsible for registering
    * a new user in the API. It has request body validation and protection against duplicate
-   * account creation built in.
+   * account creation built in. If this validation is passed, new user account is registered
+   * and response confirming user registration is sent to the user. Otherwise, corresponding
+   * error response is sent out.
    */
   @Post('register')
   async register(@Body() registerUserBody: RegisterUserBodyDTO) {
@@ -28,8 +30,9 @@ export class AuthController {
 
   /**
    * This is a handler for the POST /auth/login endpoint. It has request body validation built in and
-   * authenticates user. If successfull, it returns generated JWT token for authorization, which
-   * expires after 240 seconds. Otherwise, appropriate error response is sent out.
+   * authenticates user. If this validation is successfull, it returns generated JWT token for authorization,
+   * which expires after seconds specified in JWT_TOKEN_EXPIRATION_SECONDS environment variable. Otherwise,
+   * corresponding error response is sent out.
    */
   @Post('login')
   async login(@Body() loginUserBody: LoginUserBodyDTO) {
