@@ -2,7 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
+  NotImplementedException,
   ParseIntPipe,
   Patch,
   Post,
@@ -97,6 +99,24 @@ export class AuthorsController {
         currentUser,
       ),
       'Requested Author has been successfully updated!',
+    );
+  }
+
+  /**
+   * This is a handler for DELETE /authors/:id endpoint. This endpoint tries to delete
+   * Author based on the supplied id url parameter. This url param is validated. Further
+   * validations are carried out in deleteAuthor method. If all validations are successfull,
+   * that Author is deleted. Otherwise, corresponding error response is sent.
+   */
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async deleteUser(
+    @IntIdParam('id') authorId: number,
+    @GetUser() currentUser: User,
+  ) {
+    return formatResponse(
+      await this.authorsService.deleteAuthor(authorId, currentUser),
+      'Requested author has been successfully deleted!',
     );
   }
 }
