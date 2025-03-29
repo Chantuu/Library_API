@@ -12,7 +12,7 @@ import {
 import { AuthorsService } from './authors.service';
 import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
 import { formatResponse } from 'src/utilities/functions/formatRepsonse';
-import { postAuthorBodyDTO } from './dtos/postAuthorBody.dto';
+import { PostAuthorBodyDTO } from './dtos/postAuthorBody.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { GetUser } from 'src/utilities/decorators/user.decorator';
 import { User } from 'src/users/user.entity';
@@ -65,7 +65,7 @@ export class AuthorsController {
   @UseGuards(AuthGuard)
   @Post()
   async createNewAuthor(
-    @Body() postAuthorBodyDTO: postAuthorBodyDTO,
+    @Body() postAuthorBodyDTO: PostAuthorBodyDTO,
     @GetUser() currentUser: User,
   ) {
     return formatResponse(

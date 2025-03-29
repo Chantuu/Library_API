@@ -9,7 +9,7 @@ import { Author } from './author.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
-import { postAuthorBodyDTO } from './dtos/postAuthorBody.dto';
+import { PostAuthorBodyDTO } from './dtos/postAuthorBody.dto';
 import { PatchAuthorBodyDTO } from './dtos/patchAuthorBody.dto';
 
 @Injectable()
@@ -104,7 +104,7 @@ export class AuthorsService {
    * @returns Newly created Author entity
    * @throws ConflictException
    */
-  async createAuthor(authorData: postAuthorBodyDTO, currentUser: User) {
+  async createAuthor(authorData: PostAuthorBodyDTO, currentUser: User) {
     const authorExists = await this.authorsRepository.findOne({
       where: {
         name: authorData.name,
