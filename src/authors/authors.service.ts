@@ -1,10 +1,16 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from './author.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 import { postAuthorBodyDTO } from './dtos/postAuthorBody.dto';
+import { PatchAuthorBodyDTO } from './dtos/patchAuthorBody.dto';
 
 @Injectable()
 export class AuthorsService {
@@ -123,5 +129,98 @@ export class AuthorsService {
         'This author already exists. Please, upload new author!',
       );
     }
+  }
+
+  /**
+   * This method is responsible for updating desired Author entity with the data
+   * provided in authorData object. This method first validates, that Author entity
+   * with given id exists and if exists, current user is uploader of that resource.
+   * If that condition is true, that Author entity is updated with specified data.
+   * Otherwise, this method throws corresponding nest exception.
+   *
+   * @param authorId - Id of the desired author
+   * @param authorData - Object containing all data for updating author
+   * @param currentUser - User performing current operation
+   * @returns Updated Author Entity
+   * @throws ForbiddenException
+   * @throws BadRequestException
+   */
+  async updateAuthor(
+    authorId: number,
+    authorData: PatchAuthorBodyDTO,
+    currentUser: User,
+  ) {
+    const authorExists = await this.authorsRepository.findOne({
+      where: { id: authorId },
+      relations: { uploadedBy: true },
+    });
+
+    // If author with specified id exists and current user is uploader of that resource
+    if (authorExists && authorExists.uploadedBy?.id === currentUser.id) {
+      if (authorData.name) {
+        await this.updateAuthorName(authorExists, authorData.name);
+      }
+      if (authorData.biography) {
+        this.updateAuthorBiography(authorExists, authorData.biography);
+      }
+      if (authorData.birthDate) {
+        this.updateAuthorBirthDate(authorExists, authorData.birthDate);
+      }
+
+      const updatedAuthor = this.authorsRepository.save(authorExists);
+      return updatedAuthor;
+    }
+    // If author with specified id exists, but current user is not uploader of that resource
+    else if (authorExists && authorExists.uploadedBy?.id !== currentUser.id) {
+      throw new ForbiddenException(
+        'You can not modify resources uploaded by other users!',
+      );
+    } else {
+      throw new BadRequestException(
+        'Author with the specified id does not exist. Please, provide correct id!',
+      );
+    }
+  }
+
+  /**
+   * This is a helper method for updateAuthor method, which updates name of the given
+   * Author entity with provided name string argument. First it validates, that no author
+   * with that name exists. If that condition is satisfied, Author name is successfully
+   * updated. Otherwise, it throws BadRequestException.
+   *
+   * @param authorToUpdate - Desired Author entity to be updated
+   * @param name - Name of the author
+   * @throws BadRequestException
+   */
+  private async updateAuthorName(authorToUpdate: Author, name: string) {
+    const anotherAuthorExists = await this.findOneByName(name, false);
+
+    if (!anotherAuthorExists) {
+      authorToUpdate.name = name;
+    } else {
+      throw new BadRequestException('Author with that name already exists!');
+    }
+  }
+
+  /**
+   * This is a helper method for updateAuthor method, which updates biography of the
+   * given Author entity with supplied biography string argument.
+   *
+   * @param authorToUpdate - Desired Author entity to be updated
+   * @param biography - Biography of the author
+   */
+  private updateAuthorBiography(authorToUpdate: Author, biography: string) {
+    authorToUpdate.biography = biography;
+  }
+
+  /**
+   * This is a helper method for updateAuthor method, which updates birth date of the
+   * given Author entity with supplied birthDate string argument.
+   *
+   * @param authorToUpdate - Desired Author entity to be updated
+   * @param birthDate - Birth date of the author
+   */
+  private updateAuthorBirthDate(authorToUpdate: Author, birthDate: string) {
+    authorToUpdate.birthDate = new Date(birthDate);
   }
 }
