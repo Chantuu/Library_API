@@ -45,7 +45,10 @@ export class Book {
   })
   uploadedBy?: User;
 
-  @ManyToOne(() => Author, (author) => author.books)
+  @ManyToOne(() => Author, (author) => author.books, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @Transform(({ value }) => {
     // If User entity was specified in relationships
     if (value) {
