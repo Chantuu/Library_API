@@ -39,7 +39,7 @@ export class AuthController {
         loginUserBody.email,
         loginUserBody.password,
       ),
-      expirationDate: '240s',
+      expirationDate: process.env.JWT_TOKEN_EXPIRATION_SECONDS,
     };
   }
 }
