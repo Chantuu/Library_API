@@ -11,6 +11,12 @@ import { User } from 'src/users/user.entity';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 import { PostAuthorBodyDTO } from './dtos/postAuthorBody.dto';
 import { PatchAuthorBodyDTO } from './dtos/patchAuthorBody.dto';
+import {
+  authorAlreadyAddedErrorMessage,
+  authorIdNotFoundErrorMessage,
+  authorWithThatNameExistsErrorMessage,
+  otherResourceModificationForbiddenErrorMessage,
+} from 'src/utilities/messages/errorMessages.file';
 
 @Injectable()
 export class AuthorsService {
@@ -37,9 +43,7 @@ export class AuthorsService {
       createdAuthor.uploadedBy = currentUser; // Adding relationship that newly created author was uploaded by current user
       return this.authorsRepository.save(createdAuthor);
     } else {
-      throw new ConflictException(
-        'This author has already been added. Please add new author!',
-      );
+      throw new ConflictException(authorAlreadyAddedErrorMessage);
     }
   }
 
@@ -125,9 +129,7 @@ export class AuthorsService {
 
       return newAuthor;
     } else {
-      throw new ConflictException(
-        'This author already exists. Please, upload new author!',
-      );
+      throw new ConflictException(authorAlreadyAddedErrorMessage);
     }
   }
 
@@ -173,12 +175,10 @@ export class AuthorsService {
     // If author with specified id exists, but current user is not uploader of that resource
     else if (authorExists && authorExists.uploadedBy?.id !== currentUser.id) {
       throw new ForbiddenException(
-        'You can not modify resources uploaded by other users!',
+        otherResourceModificationForbiddenErrorMessage,
       );
     } else {
-      throw new BadRequestException(
-        'Author with the specified id does not exist. Please, provide correct id!',
-      );
+      throw new BadRequestException(authorIdNotFoundErrorMessage);
     }
   }
 
@@ -198,7 +198,7 @@ export class AuthorsService {
     if (!anotherAuthorExists) {
       authorToUpdate.name = name;
     } else {
-      throw new BadRequestException('Author with that name already exists!');
+      throw new BadRequestException(authorWithThatNameExistsErrorMessage);
     }
   }
 
@@ -243,9 +243,7 @@ export class AuthorsService {
       const deletedAuthor = await this.authorsRepository.remove(authorExists);
       return deletedAuthor;
     } else {
-      throw new BadRequestException(
-        'The author with provided id does not exist. Please, provide correct id!',
-      );
+      throw new BadRequestException(authorIdNotFoundErrorMessage);
     }
   }
 }

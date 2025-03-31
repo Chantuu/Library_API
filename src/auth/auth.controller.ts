@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { RegisterUserBodyDTO } from './dtos/registerUserBody.dto';
 import { LoginUserBodyDTO } from './dtos/loginUserBody.dto';
 import { AuthService } from './auth.service';
+import { userRegisteredSuccessMessage } from 'src/utilities/messages/successMessages.file';
 
 @Controller('auth')
 export class AuthController {
@@ -18,8 +19,7 @@ export class AuthController {
   async register(@Body() registerUserBody: RegisterUserBodyDTO) {
     await this.authService.registerUser(registerUserBody);
     return {
-      message:
-        'User has been successfully registered. Please login to recieve JWT Token.',
+      message: userRegisteredSuccessMessage,
       user: {
         name: registerUserBody.name,
         email: registerUserBody.email,

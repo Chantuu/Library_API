@@ -20,6 +20,12 @@ import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
 import { PatchBookBodyDTO } from './dtos/patchBookBody.dto';
 import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
 import { Book } from './book.entity';
+import { bookIdNotFoundErrorMessage } from 'src/utilities/messages/errorMessages.file';
+import {
+  bookAddedSuccessMessage,
+  bookDeletedSuccessMessage,
+  bookUpdatedSuccessMessage,
+} from 'src/utilities/messages/successMessages.file';
 
 @Controller('books')
 export class BooksController {
@@ -62,9 +68,7 @@ export class BooksController {
     if (result) {
       return formatResponse(result);
     } else {
-      throw new BadRequestException(
-        'User with the provided id could not be found. Please, provide correct id!',
-      );
+      throw new BadRequestException(bookIdNotFoundErrorMessage);
     }
   }
 
@@ -79,7 +83,7 @@ export class BooksController {
   async addBook(@Body() postBookBody: PostBookBodyDTO, @GetUser() user: User) {
     return formatResponse(
       await this.booksService.createBook(postBookBody, user),
-      'A new book has successfully been added',
+      bookAddedSuccessMessage,
     );
   }
 
@@ -100,7 +104,7 @@ export class BooksController {
   ) {
     return formatResponse(
       await this.booksService.updateBook(id, patchBookBody, user),
-      'Requested book has been successfully updated!',
+      bookUpdatedSuccessMessage,
     );
   }
 
@@ -115,7 +119,7 @@ export class BooksController {
   async deleteBook(@IntIdParam('id') id: number, @GetUser() user: User) {
     return formatResponse(
       await this.booksService.deleteBook(id, user),
-      'Requested book has been successfully deleted!',
+      bookDeletedSuccessMessage,
     );
   }
 }

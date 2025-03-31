@@ -17,6 +17,11 @@ import { User } from 'src/users/user.entity';
 import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
 import { IntIdParam } from 'src/utilities/decorators/intIdParam.decorator';
 import { formatResponse } from 'src/utilities/functions/formatRepsonse';
+import { userIdNotFoundErrorMessage } from 'src/utilities/messages/errorMessages.file';
+import {
+  userDeletedSuccessMessage,
+  userUpdatedSuccessMessage,
+} from 'src/utilities/messages/successMessages.file';
 
 @Controller('admin')
 @UseGuards(AuthGuard, AdminGuard)
@@ -50,9 +55,7 @@ export class AdminController {
     if (user) {
       return formatResponse(user);
     } else {
-      throw new BadRequestException(
-        'User with the provided id could not be found. Please, provide correct id!',
-      );
+      throw new BadRequestException(userIdNotFoundErrorMessage);
     }
   }
 
@@ -68,7 +71,7 @@ export class AdminController {
     @Body(PatchDtoPipe<User>) patchUserBody: PatchUserBodyDTO,
   ) {
     const updatedUser = await this.usersService.updateUser(id, patchUserBody);
-    return formatResponse(updatedUser, 'Successfuly updated requested user');
+    return formatResponse(updatedUser, userUpdatedSuccessMessage);
   }
 
   /**
@@ -80,7 +83,7 @@ export class AdminController {
   async deleteUser(@IntIdParam('id') id: number) {
     const deletedUser = await this.usersService.deleteUser(id);
 
-    return formatResponse(deletedUser, 'Successfuly deleted requested user');
+    return formatResponse(deletedUser, userDeletedSuccessMessage);
     // {
     //   message: 'Successfully deleted requested user',
     //   deletedUser: await this.usersService.deleteUser(id),

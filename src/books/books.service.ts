@@ -14,6 +14,12 @@ import { User } from 'src/users/user.entity';
 import { Author } from 'src/authors/author.entity';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 import { PatchBookBodyDTO } from './dtos/patchBookBody.dto';
+import {
+  bookAlreadyExistsErrorMessage,
+  bookIdNotFoundErrorMessage,
+  otherResourceModificationForbiddenErrorMessage,
+  specifiedAuthorNotExistsErrorMessage,
+} from 'src/utilities/messages/errorMessages.file';
 
 @Injectable()
 export class BooksService {
@@ -67,9 +73,7 @@ export class BooksService {
       await this.booksRepository.save(newBook);
       return newBook;
     } else {
-      throw new ConflictException(
-        'This book already exists. Please add new book!',
-      );
+      throw new ConflictException(bookAlreadyExistsErrorMessage);
     }
   }
 
@@ -108,14 +112,12 @@ export class BooksService {
       book.author = newAuthor;
       // If author does not exist and user does not want to create new author
     } else if (!authorExists && !createNewAuthor) {
-      throw new BadRequestException(
-        'Specified author does not exist. Please choose existing author!',
-      );
+      throw new BadRequestException(specifiedAuthorNotExistsErrorMessage);
     }
     // If author exists, but was not uploaded by the current user
     else {
       throw new UnauthorizedException(
-        'You can not modify resources uploaded by other users!',
+        otherResourceModificationForbiddenErrorMessage,
       );
     }
   }
@@ -217,12 +219,10 @@ export class BooksService {
     // If that book was uploaded by another user
     else if (bookExists && bookExists.uploadedBy?.id !== currentUser.id) {
       throw new ForbiddenException(
-        'You can not modify resources uploaded by other users!',
+        otherResourceModificationForbiddenErrorMessage,
       );
     } else {
-      throw new BadRequestException(
-        'The book with specified id does not exist. Please, type correct id!',
-      );
+      throw new BadRequestException(bookIdNotFoundErrorMessage);
     }
   }
 
@@ -276,12 +276,10 @@ export class BooksService {
     // If Specified book exists, but was not uploaded by current user
     else if (bookExists && bookExists.uploadedBy?.id !== currentUser.id) {
       throw new ForbiddenException(
-        'You can not modify resources uploaded by other users!',
+        otherResourceModificationForbiddenErrorMessage,
       );
     } else {
-      throw new BadRequestException(
-        'The book with specified id does not exist. Please, type correct id!',
-      );
+      throw new BadRequestException(bookIdNotFoundErrorMessage);
     }
   }
 }

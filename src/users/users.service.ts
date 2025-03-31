@@ -10,6 +10,12 @@ import { Repository } from 'typeorm';
 import { hashPassword } from 'src/utilities/functions/hashPassword';
 import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 import { RegisterUserBodyDTO } from 'src/auth/dtos/registerUserBody.dto';
+import {
+  adminAccountDeleteForbiddenErrorMessage,
+  userHasSamePasswordErrorMessage,
+  userIdNotFoundErrorMessage,
+  userWithEmailExistsErrorMessage,
+} from 'src/utilities/messages/errorMessages.file';
 
 @Injectable()
 export class UsersService {
@@ -57,9 +63,7 @@ export class UsersService {
       const user = this.usersRepository.create({ ...userData });
       this.usersRepository.save(user);
     } else {
-      throw new ConflictException(
-        'User with that email already exists. Please choose new email!',
-      );
+      throw new ConflictException(userWithEmailExistsErrorMessage);
     }
   }
 
@@ -134,9 +138,7 @@ export class UsersService {
       const updatedUser = await this.usersRepository.save(user);
       return updatedUser;
     } else {
-      throw new BadRequestException(
-        'User with the provided id could not be found. Please, provide correct id!',
-      );
+      throw new BadRequestException(userIdNotFoundErrorMessage);
     }
   }
 
@@ -155,9 +157,7 @@ export class UsersService {
     if (!exists) {
       user.email = email;
     } else {
-      throw new ConflictException(
-        'User with that email already exists. Please choose new email!',
-      );
+      throw new ConflictException(userWithEmailExistsErrorMessage);
     }
   }
 
@@ -188,9 +188,7 @@ export class UsersService {
     if (!(await bcrypt.compare(password, user.password))) {
       user.password = hashedPassword;
     } else {
-      throw new BadRequestException(
-        'User already has that password. Please input new password!',
-      );
+      throw new BadRequestException(userHasSamePasswordErrorMessage);
     }
   }
 
@@ -210,13 +208,9 @@ export class UsersService {
       await this.usersRepository.remove([user]);
       return user;
     } else if (user && user.role === 'admin') {
-      throw new BadRequestException(
-        'You can not delete your (Admin) account. Please, choose user accounts!',
-      );
+      throw new BadRequestException(adminAccountDeleteForbiddenErrorMessage);
     } else {
-      throw new BadRequestException(
-        'User with the provided id could not be found. Please, provide correct id!',
-      );
+      throw new BadRequestException(userIdNotFoundErrorMessage);
     }
   }
 }

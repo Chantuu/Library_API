@@ -20,6 +20,12 @@ import { User } from 'src/users/user.entity';
 import { PatchAuthorBodyDTO } from './dtos/patchAuthorBody.dto';
 import { PatchDtoPipe } from 'src/utilities/pipes/patchDto.pipe';
 import { Author } from './author.entity';
+import { authorIdNotFoundErrorMessage } from 'src/utilities/messages/errorMessages.file';
+import {
+  authorCreatedSuccessMessage,
+  authorDeletedSuccessMessage,
+  authorUpdatedSuccessMessage,
+} from 'src/utilities/messages/successMessages.file';
 
 @Controller('authors')
 export class AuthorsController {
@@ -52,9 +58,7 @@ export class AuthorsController {
     if (authorExists) {
       return formatResponse(authorExists);
     } else {
-      throw new BadRequestException(
-        'The author with provided id does not exist. Please, provide correct id!',
-      );
+      throw new BadRequestException(authorIdNotFoundErrorMessage);
     }
   }
 
@@ -73,7 +77,7 @@ export class AuthorsController {
   ) {
     return formatResponse(
       await this.authorsService.createAuthor(postAuthorBodyDTO, currentUser),
-      'New author has been successfully uploaded!',
+      authorCreatedSuccessMessage,
     );
   }
 
@@ -99,7 +103,7 @@ export class AuthorsController {
         patchAuthorBodyDTO,
         currentUser,
       ),
-      'Requested Author has been successfully updated!',
+      authorUpdatedSuccessMessage,
     );
   }
 
@@ -117,7 +121,7 @@ export class AuthorsController {
   ) {
     return formatResponse(
       await this.authorsService.deleteAuthor(authorId, currentUser),
-      'Requested author has been successfully deleted!',
+      authorDeletedSuccessMessage,
     );
   }
 }

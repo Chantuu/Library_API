@@ -3,6 +3,7 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserBodyDTO } from './dtos/registerUserBody.dto';
+import { invalidCredentialsErrorMessage } from 'src/utilities/messages/errorMessages.file';
 
 @Injectable()
 export class AuthService {
@@ -39,9 +40,7 @@ export class AuthService {
       const jwtToken = await this.jwtService.signAsync(payload);
       return jwtToken;
     } else {
-      throw new UnauthorizedException(
-        'Entered credentials are invalid. Please, try again!',
-      );
+      throw new UnauthorizedException(invalidCredentialsErrorMessage);
     }
   }
 }

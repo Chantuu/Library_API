@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
+import { jwtTokenExpiredInvalidErrorMessage } from 'src/utilities/messages/errorMessages.file';
 
 /**
  * This Guard is responsible for authorizing users in the API for uploading and managing
@@ -44,9 +45,7 @@ export class AuthGuard implements CanActivate {
         return false;
       }
     } catch {
-      throw new BadRequestException(
-        'JWT Token has been expired or is invalid. Please log in again!',
-      );
+      throw new BadRequestException(jwtTokenExpiredInvalidErrorMessage);
     }
   }
 }
