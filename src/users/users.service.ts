@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -208,7 +209,7 @@ export class UsersService {
       await this.usersRepository.remove([user]);
       return user;
     } else if (user && user.role === 'admin') {
-      throw new BadRequestException(adminAccountDeleteForbiddenErrorMessage);
+      throw new ForbiddenException(adminAccountDeleteForbiddenErrorMessage);
     } else {
       throw new BadRequestException(userIdNotFoundErrorMessage);
     }
