@@ -82,6 +82,8 @@ export class UsersService {
       this.usersRepository,
       itemsOnPage,
       page,
+      undefined, // No filtering needed
+      { uploadedAuthors: true, uploadedBooks: true },
     );
   }
 
