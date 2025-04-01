@@ -26,6 +26,7 @@ import {
   bookDeletedSuccessMessage,
   bookUpdatedSuccessMessage,
 } from 'src/utilities/messages/successMessages.file';
+import { ContentTypeGuard } from 'src/utilities/guards/content-type.guard';
 
 @Controller('books')
 export class BooksController {
@@ -79,7 +80,7 @@ export class BooksController {
    * out.
    */
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(ContentTypeGuard, AuthGuard)
   async addBook(@Body() postBookBody: PostBookBodyDTO, @GetUser() user: User) {
     return formatResponse(
       await this.booksService.createBook(postBookBody, user),
@@ -96,7 +97,7 @@ export class BooksController {
    * Otherwise, corresponding error response is sent out.
    */
   @Patch(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(ContentTypeGuard, AuthGuard)
   async updateBook(
     @IntIdParam('id') id: number,
     @GetUser() user: User,

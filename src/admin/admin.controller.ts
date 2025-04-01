@@ -22,6 +22,7 @@ import {
   userDeletedSuccessMessage,
   userUpdatedSuccessMessage,
 } from 'src/utilities/messages/successMessages.file';
+import { ContentTypeGuard } from 'src/utilities/guards/content-type.guard';
 
 @Controller('admin')
 @UseGuards(AuthGuard, AdminGuard)
@@ -65,6 +66,7 @@ export class AdminController {
    * are validated. Further validations are carried out in updateUser method. If id or
    * request body is invalid, corresponding error response is sent out.
    */
+  @UseGuards(ContentTypeGuard)
   @Patch('users/:id')
   async updateUser(
     @IntIdParam('id') id: number,

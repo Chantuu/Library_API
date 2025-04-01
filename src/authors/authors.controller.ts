@@ -26,6 +26,7 @@ import {
   authorDeletedSuccessMessage,
   authorUpdatedSuccessMessage,
 } from 'src/utilities/messages/successMessages.file';
+import { ContentTypeGuard } from 'src/utilities/guards/content-type.guard';
 
 @Controller('authors')
 export class AuthorsController {
@@ -69,7 +70,7 @@ export class AuthorsController {
    * is successfully registered and returned as a response. If any of these validations fail,
    * corresponding error response is sent out.
    */
-  @UseGuards(AuthGuard)
+  @UseGuards(ContentTypeGuard, AuthGuard)
   @Post()
   async createNewAuthor(
     @Body() postAuthorBodyDTO: PostAuthorBodyDTO,
@@ -89,7 +90,7 @@ export class AuthorsController {
    * is successfully updated and returned as a response. Otherwise, corresponding error
    * response are sent out.
    */
-  @UseGuards(AuthGuard)
+  @UseGuards(ContentTypeGuard, AuthGuard)
   @Patch(':id')
   async updateAuthor(
     @IntIdParam('id') authorId: number,

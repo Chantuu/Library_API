@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { RegisterUserBodyDTO } from './dtos/registerUserBody.dto';
 import { LoginUserBodyDTO } from './dtos/loginUserBody.dto';
 import { AuthService } from './auth.service';
 import { userRegisteredSuccessMessage } from 'src/utilities/messages/successMessages.file';
+import { ContentTypeGuard } from 'src/utilities/guards/content-type.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +17,7 @@ export class AuthController {
    * error response is sent out.
    */
   @Post('register')
+  @UseGuards(ContentTypeGuard)
   async register(@Body() registerUserBody: RegisterUserBodyDTO) {
     await this.authService.registerUser(registerUserBody);
     return {
@@ -35,6 +37,7 @@ export class AuthController {
    * corresponding error response is sent out.
    */
   @Post('login')
+  @UseGuards(ContentTypeGuard)
   async login(@Body() loginUserBody: LoginUserBodyDTO) {
     return {
       message: `Successfully authenticated as ${loginUserBody.email}. Please keep this token as secret and do not show it anyone!`,
