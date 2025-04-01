@@ -23,6 +23,16 @@ import {
   userUpdatedSuccessMessage,
 } from 'src/utilities/messages/successMessages.file';
 import { ContentTypeGuard } from 'src/utilities/guards/content-type.guard';
+import {
+  ApiBadRequestResponse,
+  ApiBasicAuth,
+  ApiConflictResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @Controller('admin')
 @UseGuards(AuthGuard, AdminGuard)
@@ -35,6 +45,30 @@ export class AdminController {
    * query parameters to customize paging result. By default, first page is returned
    * with 10 users.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiOperation({
+    description:
+      'This endpoint returns all users currently registered in the API.',
+  })
+  @ApiQuery({
+    name: 'itemsOnPage',
+    required: false,
+    description: 'This query specifies amount of items on one page',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'This query specifies desired page',
+  })
+  @ApiOkResponse({
+    description: 'Successfully returned list of the registered users',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect query parameters were provided',
+  })
+  @ApiForbiddenResponse({
+    description: 'Incorrect or no JWT token was provided',
+  })
   @Get('users')
   async findAllUsers(
     @Query('itemsOnPage', new ParseIntPipe({ optional: true }))
@@ -50,6 +84,24 @@ export class AdminController {
    * perform search and checks, that user with this id exists. If id is incorrect,
    * corresponding error response is sent out.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired user',
+  })
+  @ApiOperation({
+    description:
+      'This endpoint returns user as a response by the specified id.',
+  })
+  @ApiOkResponse({
+    description: 'User was successfully returned',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect user id was provided',
+  })
+  @ApiForbiddenResponse({
+    description: 'Incorrect or no JWT token was provided',
+  })
   @Get('users/:id')
   async findOneUser(@IntIdParam('id') id: number) {
     const user = await this.usersService.findOneById(id);
@@ -66,6 +118,27 @@ export class AdminController {
    * are validated. Further validations are carried out in updateUser method. If id or
    * request body is invalid, corresponding error response is sent out.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired user',
+  })
+  @ApiOperation({
+    description:
+      'This endpoind updates user specified by the id based on the data in request body.',
+  })
+  @ApiOkResponse({
+    description: 'User is successfully updated',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect user id or bad request body was provided',
+  })
+  @ApiForbiddenResponse({
+    description: 'Incorrect or no JWT token was provided',
+  })
+  @ApiConflictResponse({
+    description: 'Already existing password or email was provided',
+  })
   @UseGuards(ContentTypeGuard)
   @Patch('users/:id')
   async updateUser(
@@ -81,6 +154,23 @@ export class AdminController {
    * user based on the provided id url parameter. If found, an user with that id is
    * deleted. If id is invalid, an appropriate error response is sent out.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired user',
+  })
+  @ApiOperation({
+    description: 'This endpoint deletes an user based on a specified id.',
+  })
+  @ApiOkResponse({
+    description: 'User was successfully deleted',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect user id was specified',
+  })
+  @ApiForbiddenResponse({
+    description: 'Incorrect or no JWT token was provided',
+  })
   @Delete('users/:id')
   async deleteUser(@IntIdParam('id') id: number) {
     const deletedUser = await this.usersService.deleteUser(id);
