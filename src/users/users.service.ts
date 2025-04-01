@@ -211,7 +211,7 @@ export class UsersService {
     if (!(await bcrypt.compare(password, user.password))) {
       user.password = hashedPassword;
     } else {
-      throw new BadRequestException(userHasSamePasswordErrorMessage);
+      throw new ConflictException(userHasSamePasswordErrorMessage);
     }
   }
 
