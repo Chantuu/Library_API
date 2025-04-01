@@ -92,10 +92,20 @@ export class UsersService {
    * or null if that specific user was not found.
    *
    * @param email - Desired user's email
+   * @param includeRelations - Parameter controlling to include associated entities with this entity
    * @returns Promise containing desired User or null
    */
-  findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ email: email });
+  findOneByEmail(
+    email: string,
+    includeRelations: boolean = true,
+  ): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { email: email },
+      relations: {
+        uploadedAuthors: includeRelations,
+        uploadedBooks: includeRelations,
+      },
+    });
   }
 
   /**
@@ -103,10 +113,20 @@ export class UsersService {
    * or null if that specific user was not found.
    *
    * @param id - Desired User id
+   * @param includeRelations - Parameter controlling to include associated entities with this entity
    * @returns Promise containing desired User or null
    */
-  findOneById(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id: id });
+  findOneById(
+    id: number,
+    includeRelations: boolean = true,
+  ): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { id: id },
+      relations: {
+        uploadedAuthors: includeRelations,
+        uploadedBooks: includeRelations,
+      },
+    });
   }
 
   /**
