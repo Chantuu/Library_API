@@ -48,3 +48,7 @@ export const requestedPageNotExistsErrorMessage =
 
 export const incorrectQueryParamsErrorMessage =
   'Incorrect query parameters. Please provide correct paging parameters!';
+
+// ContentTypeGuard operation messages
+export const onlyApplicationJsonErrorMessage =
+  'This endpoint only accepts application/json content!';
