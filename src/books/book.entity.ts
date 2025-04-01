@@ -29,7 +29,7 @@ export class Book {
 
   @ManyToOne(() => User, (user) => user.uploadedBooks, {
     nullable: true,
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @Transform(({ value }) => {
@@ -43,7 +43,7 @@ export class Book {
       };
     }
   })
-  uploadedBy?: User;
+  uploadedBy: User;
 
   @ManyToOne(() => Author, (author) => author.books, {
     onDelete: 'CASCADE',

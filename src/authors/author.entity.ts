@@ -27,7 +27,7 @@ export class Author {
 
   @ManyToOne(() => User, (user) => user.uploadedAuthors, {
     nullable: true,
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @Transform(({ value }) => {
@@ -41,7 +41,7 @@ export class Author {
       };
     }
   })
-  uploadedBy?: User;
+  uploadedBy: User;
 
   @OneToMany(() => Book, (book) => book.author)
   @Transform(({ value }) => {
