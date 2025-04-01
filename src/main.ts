@@ -11,6 +11,15 @@ async function bootstrap() {
     .setTitle('Simple Library API')
     .setDescription('Some Description')
     .setVersion('1.0.0')
+    .addBasicAuth(
+      {
+        type: 'apiKey',
+        name: 'Authorization',
+        in: 'header',
+        description: 'JWT Token for authorization',
+      },
+      'jwtAuth',
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
