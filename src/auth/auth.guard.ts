@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -45,7 +45,7 @@ export class AuthGuard implements CanActivate {
         return false;
       }
     } catch {
-      throw new BadRequestException(jwtTokenExpiredInvalidErrorMessage);
+      throw new ForbiddenException(jwtTokenExpiredInvalidErrorMessage);
     }
   }
 }
