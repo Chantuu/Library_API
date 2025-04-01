@@ -5,6 +5,10 @@ import {
   ObjectLiteral,
   Repository,
 } from 'typeorm';
+import {
+  incorrectQueryParamsErrorMessage,
+  requestedPageNotExistsErrorMessage,
+} from '../messages/errorMessages.file';
 
 /**
  * This generic function is used for paginating all results from the specified entity repository. It requires
@@ -53,9 +57,7 @@ export async function paginateResponse<EntityT extends ObjectLiteral>(
         currentPage: `${page}/${maxPages}`,
       };
     } else {
-      throw new BadRequestException(
-        'A requested page does not exist. Please provide query parameters!',
-      );
+      throw new BadRequestException(requestedPageNotExistsErrorMessage);
     }
   }
   // If supplied itemsOnPage Query parameter exceeds maximum item count limit
@@ -64,8 +66,6 @@ export async function paginateResponse<EntityT extends ObjectLiteral>(
       `You can request maximum ${maxItemsOnPage} items per page. Please, provide correct itemsOnPage query parameter!`,
     );
   } else {
-    throw new BadRequestException(
-      'Incorrect query parameters. Please provide correct paging parameters!',
-    );
+    throw new BadRequestException(incorrectQueryParamsErrorMessage);
   }
 }

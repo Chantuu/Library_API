@@ -41,3 +41,10 @@ export const authorWithThatNameExistsErrorMessage =
 // Other operation messages
 export const otherResourceModificationForbiddenErrorMessage =
   'You can not modify resources uploaded by other users!';
+
+// Pagination operation messages
+export const requestedPageNotExistsErrorMessage =
+  'A requested page does not exist. Please, provide query parameters!';
+
+export const incorrectQueryParamsErrorMessage =
+  'Incorrect query parameters. Please provide correct paging parameters!';
