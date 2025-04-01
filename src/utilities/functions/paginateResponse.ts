@@ -34,9 +34,10 @@ export async function paginateResponse<EntityT extends ObjectLiteral>(
     where: searchCriterium,
   });
   const maxPages = Math.ceil(entityCount / itemsOnPage); // Calculate maximum  available pages
+  const maxItemsOnPage = parseInt(process.env.MAX_ITEMS_ON_PAGE as string); // Maximum amount of items on one page
 
   // Checking, that paging parameters are correctly provided
-  if (itemsOnPage > 0 && page > 0) {
+  if (itemsOnPage > 0 && itemsOnPage <= maxItemsOnPage && page > 0) {
     if (page <= maxPages) {
       const pagesToSkip = page - 1;
       const entityArray = await entityRepository.find({
@@ -56,6 +57,12 @@ export async function paginateResponse<EntityT extends ObjectLiteral>(
         'A requested page does not exist. Please provide query parameters!',
       );
     }
+  }
+  // If supplied itemsOnPage Query parameter exceeds maximum item count limit
+  else if (itemsOnPage > maxItemsOnPage) {
+    throw new BadRequestException(
+      `You can request maximum ${maxItemsOnPage} items per page. Please, provide correct itemsOnPage query parameter!`,
+    );
   } else {
     throw new BadRequestException(
       'Incorrect query parameters. Please provide correct paging parameters!',
