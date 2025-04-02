@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from './author.entity';
@@ -12,6 +13,7 @@ import { paginateResponse } from 'src/utilities/functions/paginateResponse';
 import { PostAuthorBodyDTO } from './dtos/postAuthorBody.dto';
 import { PatchAuthorBodyDTO } from './dtos/patchAuthorBody.dto';
 import {
+  adminAccountDeleteForbiddenErrorMessage,
   authorAlreadyAddedErrorMessage,
   authorIdNotFoundErrorMessage,
   authorWithThatNameExistsErrorMessage,
@@ -234,6 +236,7 @@ export class AuthorsService {
    * @param currentUser - User performing current operation
    * @returns Deleted Author
    * @throws BadRequestException
+   * @throws UnauthorizedException
    */
   async deleteAuthor(authorId: number, currentUser: User) {
     const authorExists = await this.findOneById(authorId);
@@ -242,6 +245,10 @@ export class AuthorsService {
     if (authorExists && authorExists.uploadedBy?.id === currentUser.id) {
       const deletedAuthor = await this.authorsRepository.remove(authorExists);
       return deletedAuthor;
+    }
+    // If specified author exists but current user is not uploader of that author
+    else if (authorExists && authorExists.uploadedBy.id !== currentUser.id) {
+      throw new UnauthorizedException(adminAccountDeleteForbiddenErrorMessage);
     } else {
       throw new BadRequestException(authorIdNotFoundErrorMessage);
     }
