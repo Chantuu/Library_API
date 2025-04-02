@@ -27,6 +27,17 @@ import {
   bookUpdatedSuccessMessage,
 } from 'src/utilities/messages/successMessages.file';
 import { ContentTypeGuard } from 'src/utilities/guards/content-type.guard';
+import {
+  ApiBadRequestResponse,
+  ApiBasicAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @Controller('books')
 export class BooksController {
@@ -37,6 +48,42 @@ export class BooksController {
    * number type query parameters are properly validated. It returns customized and paginated result
    * of the found Book entities as a response based on those query parameters.
    */
+  @ApiQuery({
+    name: 'itemsOnPage',
+    description: 'This query specifies amount of items on one page',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'This query specifies desired page',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'author',
+    description: 'This query filters result based on provided author',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'genre',
+    description: 'This query filters result based on provided genre',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'publishYear',
+    description: 'This query filters result based on provided publish year',
+    required: false,
+  })
+  @ApiOperation({
+    description:
+      'This endpoint return paginated results of the available books in the api.',
+  })
+  @ApiOkResponse({
+    description:
+      'Successfully returned paginated results of the registered book',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect query parameters were provided',
+  })
   @Get()
   async findAllBooks(
     @Query('itemsOnPage', new ParseIntPipe({ optional: true }))
@@ -62,6 +109,19 @@ export class BooksController {
    * to find specific Book. This url parameter is validated. If that Book entity is found, \
    * it is returned. Otherwise, a proper error response is returned to the user.
    */
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired book',
+  })
+  @ApiOperation({
+    description: 'This endpoint returns a book based on the provided id.',
+  })
+  @ApiOkResponse({
+    description: 'Book was successfully returned',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect user id was provided',
+  })
   @Get(':id')
   async findBookById(@IntIdParam('id') id: number) {
     const result = await this.booksService.findOneById(id);
@@ -79,6 +139,20 @@ export class BooksController {
    * successfull, new book is created. Otherwise, corresponding error response is sent
    * out.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiOperation({
+    description:
+      'This endpoint creates new book based on data provided in request body.',
+  })
+  @ApiCreatedResponse({
+    description: 'New book was successfully created',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request body was provided',
+  })
+  @ApiUnauthorizedResponse({
+    description: "Operation on other user's resource is unauthorized",
+  })
   @Post()
   @UseGuards(ContentTypeGuard, AuthGuard)
   async addBook(@Body() postBookBody: PostBookBodyDTO, @GetUser() user: User) {
@@ -98,6 +172,24 @@ export class BooksController {
    */
   @Patch(':id')
   @UseGuards(ContentTypeGuard, AuthGuard)
+  @ApiBasicAuth('jwtAuth')
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired book',
+  })
+  @ApiOperation({
+    description:
+      'This endpoint updates a book based on a specified id and data in request body.',
+  })
+  @ApiOkResponse({
+    description: 'Book was successfully updated',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect id or bad request body was provided',
+  })
+  @ApiForbiddenResponse({
+    description: "Operation on other user's resource is unauthorized",
+  })
   async updateBook(
     @IntIdParam('id') id: number,
     @GetUser() user: User,
@@ -115,6 +207,23 @@ export class BooksController {
    * User is uploader of that book, it is successfully deleted. Otherwise, corresponding error response
    *  is sent.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired book',
+  })
+  @ApiOperation({
+    description: 'This method deletes a book based on specified id.',
+  })
+  @ApiOkResponse({
+    description: 'Book was successfully deleted',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorect id was provided',
+  })
+  @ApiForbiddenResponse({
+    description: "Operation on other user's resource is unauthorized",
+  })
   @Delete(':id')
   @UseGuards(AuthGuard)
   async deleteBook(@IntIdParam('id') id: number, @GetUser() user: User) {
