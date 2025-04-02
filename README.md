@@ -1,3 +1,7 @@
+![Static Badge](https://img.shields.io/badge/npm-10.9.0-blue)
+![Static Badge](https://img.shields.io/badge/License-MIT-green)
+![Static Badge](https://img.shields.io/badge/Version-1.0.0-green)
+
 # Simple Library API
 
 ## Description
@@ -28,7 +32,23 @@ This repository contains a **RESTful** API, written using Nest.js. It is a simpl
 - **Bcrypt**
 - **Swagger UI**
 
+## Environment Variables
+
+These environment variables must be set up in `.env`, which is crucial for the server functionality.
+
+_Note: This file must be present in project's root directory._
+
+- `DATABASE_NAME_PATH` - Specifies a name and path of the sqlite database.
+- `JWT_MODULE_SECRET` - Secret, which is used to generated encrypted JWT Tokens. **DO NOT SHOW THIS KEY TO ANYONE!**
+- `ADMIN_NAME` - Name of the generated admin account
+- `ADMIN_EMAIL` - Email of the generated admin account
+- `ADMIN_PASSWORD` - Password of the generated admin account
+- `JWT_TOKEN_EXPIRATION_SECONDS` - Expiration time of the JWT Token. **Must be written in this syntax: "600s"**
+- `MAX_ITEMS_ON_PAGE` - Maximum amount of items on one page in paginated result.
+
 ## Project setup
+
+Install required packages:
 
 ```bash
 $ npm install
@@ -91,6 +111,14 @@ $ npm run test:cov
 - `PATCH /admin` - Change admin account details (Admin Only) (JWT Auth)
 - `DELETE /admin/users/:id` - Delete Specific User (Admin Only) (JWT Auth)
 
+### Swagger Documentation
+
+- `/docs` - Show SwaggerUI Documentation
+
 ## License
 
 This project is licensed under **MIT License.**
+
+## Credits
+
+Thank you for showing your interest and checking out this project. Be sure to check out my other projects on [my Github account](https://github.com/Chantuu).
