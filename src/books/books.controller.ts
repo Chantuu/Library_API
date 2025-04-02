@@ -170,8 +170,6 @@ export class BooksController {
    * If all of these conditions are met, desired Book is updated and returned to the user.
    * Otherwise, corresponding error response is sent out.
    */
-  @Patch(':id')
-  @UseGuards(ContentTypeGuard, AuthGuard)
   @ApiBasicAuth('jwtAuth')
   @ApiParam({
     name: 'id',
@@ -190,6 +188,8 @@ export class BooksController {
   @ApiForbiddenResponse({
     description: "Operation on other user's resource is unauthorized",
   })
+  @Patch(':id')
+  @UseGuards(ContentTypeGuard, AuthGuard)
   async updateBook(
     @IntIdParam('id') id: number,
     @GetUser() user: User,
