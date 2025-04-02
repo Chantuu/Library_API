@@ -9,7 +9,7 @@ async function bootstrap() {
   // SwaggerUI Setup
   const config = new DocumentBuilder()
     .setTitle('Simple Library API')
-    .setDescription('Some Description')
+    .setDescription('Documentation describing how API endpoints work.')
     .setVersion('1.0.0')
     .addBasicAuth(
       {
