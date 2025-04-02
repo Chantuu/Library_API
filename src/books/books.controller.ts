@@ -79,7 +79,7 @@ export class BooksController {
   })
   @ApiOkResponse({
     description:
-      'Successfully returned paginated results of the registered book',
+      'Successfully returned paginated results of the registered books',
   })
   @ApiBadRequestResponse({
     description: 'Incorrect query parameters were provided',
