@@ -27,6 +27,18 @@ import {
   authorUpdatedSuccessMessage,
 } from 'src/utilities/messages/successMessages.file';
 import { ContentTypeGuard } from 'src/utilities/guards/content-type.guard';
+import {
+  ApiBadRequestResponse,
+  ApiBasicAuth,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @Controller('authors')
 export class AuthorsController {
@@ -38,6 +50,27 @@ export class AuthorsController {
    * query parameters used to customize pagination output. It also has query parameter validation
    * built-in.
    */
+  @ApiQuery({
+    name: 'itemsOnPage',
+    description: 'This query specifies amount of items on one page',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'This query specifies desired page',
+    required: false,
+  })
+  @ApiOperation({
+    description:
+      'This endpoint return paginated results of the available authors in the api.',
+  })
+  @ApiOkResponse({
+    description:
+      'Successfully returned paginated results of the registered authors',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect query parameters were provided',
+  })
   @Get()
   async getAllAuthors(
     @Query('itemsOnPage', new ParseIntPipe({ optional: true }))
@@ -53,6 +86,19 @@ export class AuthorsController {
    * validated and Author with that id exists, that Author entity is returned as a response.
    * Otherwise, correct error response is sent.
    */
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired author',
+  })
+  @ApiOperation({
+    description: 'This endpoint returns a author based on the provided id.',
+  })
+  @ApiOkResponse({
+    description: 'Author was successfully returned',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect user id was provided',
+  })
   @Get(':id')
   async getOneAuthor(@IntIdParam('id') authorId: number) {
     const authorExists = await this.authorsService.findOneById(authorId);
@@ -70,6 +116,20 @@ export class AuthorsController {
    * is successfully registered and returned as a response. If any of these validations fail,
    * corresponding error response is sent out.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiOperation({
+    description:
+      'This endpoint creates new author based on data provided in request body.',
+  })
+  @ApiCreatedResponse({
+    description: 'New author was successfully created',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request body was provided',
+  })
+  @ApiConflictResponse({
+    description: 'Author with that name already exists',
+  })
   @UseGuards(ContentTypeGuard, AuthGuard)
   @Post()
   async createNewAuthor(
@@ -90,6 +150,24 @@ export class AuthorsController {
    * is successfully updated and returned as a response. Otherwise, corresponding error
    * response are sent out.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired author',
+  })
+  @ApiOperation({
+    description:
+      'This endpoint updates an author based on a specified id and data in request body.',
+  })
+  @ApiOkResponse({
+    description: 'Author was successfully updated',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorrect id or bad request body was provided',
+  })
+  @ApiForbiddenResponse({
+    description: "Operation on other user's resource is unauthorized",
+  })
   @UseGuards(ContentTypeGuard, AuthGuard)
   @Patch(':id')
   async updateAuthor(
@@ -114,6 +192,23 @@ export class AuthorsController {
    * validations are carried out in deleteAuthor method. If all validations are successfull,
    * that Author is deleted. Otherwise, corresponding error response is sent.
    */
+  @ApiBasicAuth('jwtAuth')
+  @ApiParam({
+    name: 'id',
+    description: 'Id of the desired author',
+  })
+  @ApiOperation({
+    description: 'This method deletes an author based on specified id.',
+  })
+  @ApiOkResponse({
+    description: 'Author was successfully deleted',
+  })
+  @ApiBadRequestResponse({
+    description: 'Incorect id was provided',
+  })
+  @ApiForbiddenResponse({
+    description: "Operation on other user's resource is unauthorized",
+  })
   @UseGuards(AuthGuard)
   @Delete(':id')
   async deleteUser(
